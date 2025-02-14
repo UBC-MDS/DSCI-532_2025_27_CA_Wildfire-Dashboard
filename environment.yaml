@@ -1,4 +1,4 @@
-name: '532'
+name: '532-27'
 channels:
     - conda-forge
     - defaults
