@@ -10,7 +10,7 @@ from vega_datasets import data
 # Initiatlize the app
 app = Dash(__name__, external_stylesheets=[dbc.themes.FLATLY])
 
-df = pd.read_csv("../data/raw/California Wildfire Damage.csv", parse_dates=["Date"])
+df = pd.read_csv("data/raw/California Wildfire Damage.csv", parse_dates=["Date"])
 
 
 # Layout
