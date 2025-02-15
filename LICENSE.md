@@ -1,6 +1,6 @@
 # License
 
-## Analysis report
+## Reports
 
 Copyright (c) 2025
 This report (source contained in the [`DSCI-532_2025_27_CA_Wildfire-Dashboard` repository](https://github.com/UBC-MDS/DSCI-532_2025_27_CA_Wildfire-Dashboard)) is made available under the **Attribution-NonCommercial-ShareAlike 4.0 International** ([CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)).
