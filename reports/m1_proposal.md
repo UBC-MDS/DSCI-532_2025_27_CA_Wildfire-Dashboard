@@ -37,6 +37,17 @@ To enhance our analysis, we plan to derive the following new variables:
 
 -  **Estimated Financial Loss per Acre Burned** – This metric will help us evaluate if the financial cost of wildfires has increased over time and whether certain wildfire causes result in disproportionately higher economic losses.x
 
+## Research Question
+Dr. Daniel, a Fire Management Officer at the California Department of Forestry and Fire Protection is responsible for investigating wildfires,
+ determining their root causes, estimating their damage, and designing mitigation strategies to reduce the environmental, financial, and human harm caused by wildfires in California.
+ As Dr. Daniel is not necessarily an experienced data scientist, our app will help him easily analyze wildfire data and aid him in creating appropriate plans and policies to reduce the destruction caused by wildfires in California.
+
+Dr. Daniel’s final goal is to reduce the harm caused by wildfires in California. He wants to find out what factors affect the frequency and magnitude of wildfires, so that he can adjust his policy and strategy updates accordingly.
+
+He will open our app, review the data visualizations displayed, take notes on the insights he gleans from those visualizations, he will then use the filter function to dive deeper into the data.
+ Then, he will adjust California’s wildfire mitigation policies and strategies according to the insights he gained from our dashboard. 
+ For example, Dr. Daniel may impose restrictions on campfires in Riverside County during the summer because he notices a frequent increase of wildfires caused by human activity in that region during that period from looking at historical data on our dashboard.  
+
 
 ## App sketch and description
 ![Sketch of California wildfire dashboard](../img/sketch.png)
