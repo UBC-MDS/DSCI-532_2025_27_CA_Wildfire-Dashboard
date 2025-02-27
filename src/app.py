@@ -9,6 +9,7 @@ from data_import import load_calfire_df
 
 # Initiatlize the app
 app = Dash(__name__, external_stylesheets=[dbc.themes.FLATLY])
+server = app.server
 
 # Load wildfire data
 calfire_df = load_calfire_df()
@@ -60,4 +61,4 @@ app.layout = dbc.Container([
 
 # Run the app/dashboard
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
