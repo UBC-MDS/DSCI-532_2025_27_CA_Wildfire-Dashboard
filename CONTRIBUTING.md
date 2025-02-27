@@ -62,5 +62,5 @@ Before you submit a pull request, check that it meets these guidelines:
 
 Please note that this project is released with a Code of Conduct. By contributing to this project you agree to abide by its terms.
 
-#### Source
-The contents of this file have been adapted from the automatically generated CONTRIBUTING.md from the cookiecutter package.
+## Attribution
+The contents of this file have been adapted from the automatically generated CONTRIBUTING.md from the cookiecutter package version 2.6.0.
