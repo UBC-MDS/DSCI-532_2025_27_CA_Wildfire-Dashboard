@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 import dash_vega_components as dvc
 import pandas as pd
 import plotly.express as px
-from vega_datasets import data
+#from vega_datasets import data
 from data_import import load_calfire_df
 
 # Initiatlize the app
@@ -61,4 +61,4 @@ app.layout = dbc.Container([
 
 # Run the app/dashboard
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.server.run(debug=False)
