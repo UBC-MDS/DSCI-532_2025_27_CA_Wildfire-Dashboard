@@ -48,6 +48,7 @@ def load_calfire_df():
 
     return calfire_df
 
+
 df = load_calfire_df()
 
 df.to_csv("data/raw/California_Wildfire.csv", index=False)
