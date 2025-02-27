@@ -4,15 +4,14 @@ import dash_bootstrap_components as dbc
 import dash_vega_components as dvc
 import pandas as pd
 import plotly.express as px
-#from vega_datasets import data
-from data_import import load_calfire_df
+
 
 # Initiatlize the app
 app = Dash(__name__, external_stylesheets=[dbc.themes.FLATLY])
 server = app.server
 
 # Load wildfire data
-calfire_df = load_calfire_df()
+calfire_df = pd.read_csv("data/raw/California_Wildfire.csv")
 
 # Components
 title = [html.H1('California Wildfire Dashboard'),
