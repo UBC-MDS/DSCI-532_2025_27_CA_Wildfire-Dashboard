@@ -9,7 +9,7 @@ from vega_datasets import data
 
 # Initiatlize the app
 app = Dash(__name__, external_stylesheets=[dbc.themes.FLATLY])
-
+server = app.server
 df = pd.read_csv("data/raw/California Wildfire Damage.csv", parse_dates=["Date"])
 
 
@@ -84,4 +84,4 @@ def create_chart(location="Butte County"):
 
 # Run the app/dashboard
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
