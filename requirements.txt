@@ -1,4 +1,3 @@
-
 altair==5.5.*
 gunicorn==21.2.*
 altair_tiles==0.4.*
@@ -9,3 +8,5 @@ numpy==2.2.*
 pandas==2.2.*
 pip==25.0.*
 plotly==6.0.*
+
+
