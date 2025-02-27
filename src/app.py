@@ -61,4 +61,4 @@ app.layout = dbc.Container([
 
 # Run the app/dashboard
 if __name__ == '__main__':
-    app.server.run(debug=False)
+    app.run(debug=False)
