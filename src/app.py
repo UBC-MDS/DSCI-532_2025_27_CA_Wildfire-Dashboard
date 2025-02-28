@@ -8,6 +8,7 @@ import plotly.express as px
 from data_import import load_calfire_df
 from roof_chart import make_roof_chart
 from damage_chart import make_damage_chart
+from structure_chart import make_structure_chart
 
 
 # Initiatlize the app
@@ -44,9 +45,10 @@ global_widgets = [
 cali_map = [html.H3('California map')] # map of california with
 sum_cost=[html.H3('summary cost')]# total lost value 
 damage_level=dvc.Vega(id='damage_chart', 
-                      spec=make_damage_chart(calfire_df).to_dict(format="vega"))# donut chart of count of damage level
+                      spec=make_damage_chart(calfire_df).to_dict(format="vega")) # donut chart of count of damage level
 time_cost=[html.H3('time series of cost')]# time series of cost of incidents
-structure_count=[html.H3('bar chart structure count')]# bar chart of damage by stucture category and county
+structure_count=dvc.Vega(id='structure_chart',
+                         spec=make_structure_chart(calfire_df).to_dict(format="vega")) # bar chart of damage by stucture category and county
 house_damage =[html.H3('house characteristic vs damage')]# house characteristic vs Damage level
 
 roof_chart = dvc.Vega(id='roof_chart', spec=make_roof_chart(calfire_df).to_dict(format="vega"))
