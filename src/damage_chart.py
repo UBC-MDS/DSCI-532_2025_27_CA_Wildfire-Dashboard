@@ -2,7 +2,8 @@ import pandas as pd
 import altair as alt
 
 def make_damage_chart(calfire_df):
-    calfire_damage = calfire_df[calfire_df['Damage'] != 'Unknown']
+    calfire_damage = calfire_df.copy()
+    calfire_damage = calfire_damage[calfire_damage['Damage'] != 'Unknown']
     calfire_damage = calfire_damage.groupby(['Damage'])['Damage'].count().reset_index(name="Count")
 
     alt.data_transformers.enable("vegafusion")
