@@ -6,6 +6,7 @@ import pandas as pd
 import plotly.express as px
 from data_import import load_calfire_df
 from roof_chart import make_roof_chart
+import geopandas as gpd
 
 
 # Initiatlize the app
@@ -15,6 +16,10 @@ server = app.server
 # Load wildfire data
 calfire_df = pd.read_csv("data/processed/cleaned_cal_fire.csv")
 counties = sorted(calfire_df["County"].dropna().unique())
+
+# Load geojson data on county boundaries
+geojson_file_path = 'data/raw/California_County_Boundaries.geojson'
+county_boundaries = gpd.read_file(geojson_file_path)
 
 # Components
 title = [html.H1('California Wildfire Dashboard'),
