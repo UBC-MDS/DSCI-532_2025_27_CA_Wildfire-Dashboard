@@ -9,6 +9,8 @@ from data_import import load_calfire_df
 from roof_chart import make_roof_chart
 from damage_chart import make_damage_chart
 from structure_chart import make_structure_chart
+from summary_chart import make_summary_chart
+from timeseries_chart import make_time_series_chart
 
 
 # Initiatlize the app
@@ -47,10 +49,11 @@ global_widgets = [
                     updatemode='drag')
 ] # inputs
 cali_map = [html.H3('California map')] # map of california with
-sum_cost=[html.H3('summary cost')]# total lost value 
+summary_chart = dvc.Vega(id='summary_chart', spec=make_summary_chart(calfire_df).to_dict(format="vega"))
+# total lost value 
 damage_level=dvc.Vega(id='damage_chart', 
                       spec=make_damage_chart(calfire_df).to_dict(format="vega")) # donut chart of count of damage level
-time_cost=[html.H3('time series of cost')]# time series of cost of incidents
+timeseries_chart = dvc.Vega(id='timeseries_chart', spec=make_time_series_chart(calfire_df).to_dict(format="vega"))# time series of cost of incidents
 structure_count=dvc.Vega(id='structure_chart',
                          spec=make_structure_chart(calfire_df).to_dict(format="vega")) # bar chart of damage by stucture category and county
 house_damage =[html.H3('house characteristic vs damage')]# house characteristic vs Damage level
@@ -62,16 +65,19 @@ app.layout = dbc.Container([
     dbc.Row(dbc.Col(title)),
     dbc.Row([
         dbc.Col(global_widgets, md=3),
-        dbc.Col(cali_map),
+        dbc.Col(cali_map, md=6),
         dbc.Col([
-            dbc.Row(sum_cost),
-            dbc.Row(damage_level)
-        ],
-        md=3)
+         dbc.Row(
+                dbc.Col(html.Div(summary_chart, style={"text-align": "center", "margin-bottom": "5px"}))  # Moves Up
+            ),
+            dbc.Row(
+                dbc.Col(damage_level, style={"text-align": "center", "margin-top": "-30px"})  # Moves Up
+            )
+        ], md=3)
     ]),
-    dbc.Row([
+  dbc.Row([
         dbc.Col(roof_chart),
-        dbc.Col(time_cost),
+        dbc.Col(timeseries_chart),
         dbc.Col(structure_count)
     ])
 ])
@@ -81,6 +87,8 @@ app.layout = dbc.Container([
     [Output('roof_chart', 'spec'),
      Output('damage_chart', 'spec'),
      Output('structure_chart', 'spec')],
+     Output('summary_chart', 'spec'),
+     Output('timeseries_chart', 'spec'),
     [Input('county', 'value'),
     Input('year', 'value'),
     Input('incident_number', 'value')]
@@ -98,8 +106,10 @@ def update_charts(county, year, incident_number):
     roof_chart = make_roof_chart(filtered_df)
     damage_chart = make_damage_chart(filtered_df)
     structure_chart = make_structure_chart(filtered_df)
-    return roof_chart.to_dict(format="vega"), damage_chart.to_dict(format="vega"), structure_chart.to_dict(format="vega")
+    summary_chart = make_summary_chart(filtered_df)
+    timeseries_chart = make_time_series_chart(filtered_df)
+    return roof_chart.to_dict(format="vega"), damage_chart.to_dict(format="vega"), structure_chart.to_dict(format="vega"), summary_chart.to_dict(format="vega"), timeseries_chart.to_dict(format="vega")
 
 # Run the app/dashboard
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.server.run(debug=True)
