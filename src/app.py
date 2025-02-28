@@ -18,8 +18,11 @@ server = app.server
 # Load wildfire data
 calfire_df = pd.read_csv("data/processed/cleaned_cal_fire.csv")
 counties = sorted(calfire_df["County"].dropna().unique())
-min_year = pd.to_datetime(calfire_df['Incident Start Date']).min().year
-max_year = pd.to_datetime(calfire_df['Incident Start Date']).max().year
+calfire_df["Incident Start Date"] = pd.to_datetime(calfire_df["Incident Start Date"], format="mixed")
+min_year = calfire_df['Incident Start Date'].min().year
+max_year = calfire_df['Incident Start Date'].max().year
+
+
 # Load geojson data on county boundaries
 geojson_file_path = 'data/raw/California_County_Boundaries.geojson'
 county_boundaries = gpd.read_file(geojson_file_path)
@@ -34,7 +37,7 @@ global_widgets = [
                  multi = True),
 
     dbc.Label("Incident Number"),
-    dcc.Dropdown(id="Incident Number", options=sorted(calfire_df["Incident Number"].dropna().unique()), value = 'id'),
+    dcc.Dropdown(id="incident_number", options=sorted(calfire_df["Incident Number"].dropna().unique()), value = 'id', multi= True),
     dbc.Label("Year"),
     dcc.RangeSlider(id='year',
                     min=min_year,
@@ -75,16 +78,27 @@ app.layout = dbc.Container([
 
 # Server side callbacks/reactivity
 @callback(
-    Output('roof_chart', 'spec'),
-    Input('county', 'value')
+    [Output('roof_chart', 'spec'),
+     Output('damage_chart', 'spec'),
+     Output('structure_chart', 'spec')],
+    [Input('county', 'value'),
+    Input('year', 'value'),
+    Input('incident_number', 'value')]
 )
-def create_roof_chart(county):
-    if not county:  # If no county is selected, use all counties
-        filtered_df = calfire_df
-    else:
-        filtered_df = calfire_df[calfire_df['County'].isin(county)]
+def update_charts(county, year, incident_number):
+    filtered_df = calfire_df[(calfire_df["Incident Start Date"].dt.year
+                                  .between(year[0], year[1]))]
+
+    if county:
+        filtered_df = filtered_df[filtered_df['County'].isin(county)]
+    
+    if incident_number:
+        filtered_df = filtered_df[filtered_df['Incident Number'].isin(incident_number)]
+
     roof_chart = make_roof_chart(filtered_df)
-    return roof_chart.to_dict(format="vega")
+    damage_chart = make_damage_chart(filtered_df)
+    structure_chart = make_structure_chart(filtered_df)
+    return roof_chart.to_dict(format="vega"), damage_chart.to_dict(format="vega"), structure_chart.to_dict(format="vega")
 
 # Run the app/dashboard
 if __name__ == '__main__':
