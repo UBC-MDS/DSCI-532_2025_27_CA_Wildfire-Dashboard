@@ -18,7 +18,8 @@ server = app.server
 # Load wildfire data
 calfire_df = pd.read_csv("data/processed/cleaned_cal_fire.csv")
 counties = sorted(calfire_df["County"].dropna().unique())
-
+min_year = pd.to_datetime(calfire_df['Incident Start Date']).min().year
+max_year = pd.to_datetime(calfire_df['Incident Start Date']).max().year
 # Load geojson data on county boundaries
 geojson_file_path = 'data/raw/California_County_Boundaries.geojson'
 county_boundaries = gpd.read_file(geojson_file_path)
@@ -36,10 +37,10 @@ global_widgets = [
     dcc.Dropdown(id="Incident Number", options=sorted(calfire_df["Incident Number"].dropna().unique()), value = 'id'),
     dbc.Label("Year"),
     dcc.RangeSlider(id='year',
-                    min=2013,
-                    max=2025,
+                    min=min_year,
+                    max=max_year,
                     value=[2013, 2025],
-                    marks={year: str(year) for year in range(2013, 2026, 2)},
+                    marks={year: str(year) for year in range(min_year, max_year+2, 2)},
                     updatemode='drag')
 ] # inputs
 cali_map = [html.H3('California map')] # map of california with

@@ -9,22 +9,22 @@ def load_calfire_df():
     load_calfire_df()
     '''    
 
-    csv_file_path = '../data/raw/CAL_FIRE_Damage_Inspection_(DINS)_Data.csv'
+    csv_file_path = '../data/raw/California_wildfire_2013-2025.csv'
     calfire_df = pd.read_csv(csv_file_path)
 
-    columns = ['DAMAGE', 'CITY', 'COUNTY', 'INCIDENTNAME', 'INCIDENTNUM', 'INCIDENTSTARTDATE', 'STRUCTURETYPE',
-       'STRUCTURECATEGORY', 'ROOFCONSTRUCTION', 'EAVES', 'VENTSCREEN', 'EXTERIORSIDING', 'WINDOWPANE',
-       'DECKPORCHONGRADE', 'DECKPORCHELEVATED', 'PATIOCOVERCARPORT',
-       'FENCEATTACHEDTOSTRUCTURE', 'PROPANETANKDISTANCE',
-       'UTILITYMISCSTRUCTUREDISTANCE', 'FIRENAME',
-       'ASSESSEDIMPROVEDVALUE', 'YEARBUILT']
+    columns = ['* Damage', '* City', 'County', '* Incident Name', 'Incident Number (e.g. CAAEU 123456)', 'Incident Start Date', '* Structure Type',
+       'Structure Category', '* Roof Construction', '* Eaves', '* Vent Screen', '* Exterior Siding', '* Window Pane',
+       '* Deck/Porch On Grade', '* Deck/Porch Elevated', '* Patio Cover/Carport Attached to Structure',
+       '* Fence Attached to Structure', 'Distance - Propane Tank to Structure',
+       'Distance - Residence to Utility/Misc Structure &gt; 120 SQFT', 'Fire Name (Secondary)',
+       'Assessed Improved Value (parcel)', 'Year Built (parcel)']
     
     # Selecting relevant columns
     calfire_df = calfire_df[columns]
 
     # Minor data cleaning
-    calfire_df.loc[calfire_df["CITY"].isin(["A", "#31"]), "CITY"] = "Other"
-    calfire_df.loc[calfire_df["DAMAGE"] == "Inaccessible", "DAMAGE"] = "Unknown"
+    calfire_df.loc[calfire_df["* City"].isin(["A", "#31"]), "* City"] = "Other"
+    calfire_df.loc[calfire_df["* Damage"] == "Inaccessible", "* Damage"] = "Unknown"
 
     new_columns = ["Damage", "City", "County", "Incident Name", "Incident Number", "Incident Start Date", "Structure Type", "Structure Category",
                     "Roof Construction", "Eaves", "Vent Screen", "Exterior Siding", 'Window Pane',
