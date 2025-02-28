@@ -13,7 +13,7 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.FLATLY])
 server = app.server
 
 # Load wildfire data
-calfire_df = load_calfire_df()
+calfire_df = pd.read_csv("data/processed/cleaned_cal_fire.csv")
 counties = sorted(calfire_df["County"].dropna().unique())
 
 # Components

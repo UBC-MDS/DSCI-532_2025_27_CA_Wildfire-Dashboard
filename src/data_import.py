@@ -2,17 +2,15 @@ import pandas as pd
 
 def load_calfire_df():
     '''
-    Imports the CAL FIRE Damage Inspection (DINS) Data CSV from the California Open Data Portal and converts it to a Pandas DataFrame and returns it. Also applies some simple data cleaning.
-
-    Returns: pandas dataframe
+    Imports the CAL FIRE Damage Inspection (DINS) Data CSV from data folder and converts it to a Pandas DataFrame and saves it in data folder. Also applies some simple data cleaning.
 
     Usage:
     from data_import import load_calfire_df
-    calfire_df = load_calfire_df()
+    load_calfire_df()
     '''    
 
-    csv_url = 'https://gis.data.cnra.ca.gov/datasets/CALFIRE-Forestry::cal-fire-damage-inspection-dins-data.csv'
-    calfire_df = pd.read_csv(csv_url)
+    csv_file_path = '../data/raw/CAL_FIRE_Damage_Inspection_(DINS)_Data.csv'
+    calfire_df = pd.read_csv(csv_file_path)
 
     columns = ['DAMAGE', 'CITY', 'COUNTY', 'INCIDENTNAME', 'INCIDENTNUM', 'INCIDENTSTARTDATE', 'STRUCTURETYPE',
        'STRUCTURECATEGORY', 'ROOFCONSTRUCTION', 'EAVES', 'VENTSCREEN', 'EXTERIORSIDING', 'WINDOWPANE',
@@ -40,4 +38,5 @@ def load_calfire_df():
     # Renaming columns
     calfire_df.columns = new_columns
 
-    return calfire_df
+    # Save cleaned up dataframe into data folder
+    calfire_df.to_csv('../data/processed/cleaned_cal_fire.csv', index=False)
