@@ -8,10 +8,11 @@ def make_time_series_chart(calfire_df, selected_counties=None):
     calfire_time_series = calfire_df.groupby(
         [calfire_df["Incident Start Date"].dt.year, "County"]
     )["Assessed Improved Value"].sum().reset_index()
+    calfire_time_series.rename(columns={"Incident Start Date": "Year", "Assessed Improved Value": "Total Economic Loss (in Billion)"}, inplace=True)
+    calfire_time_series["Total Economic Loss (in Billion)"] /= 1e9
 
-    calfire_time_series.rename(columns={"Incident Start Date": "Year", "Assessed Improved Value": "Total Economic Loss"}, inplace=True)
     top_5_counties = (
-        calfire_time_series.groupby("County")["Total Economic Loss"]
+        calfire_time_series.groupby("County")["Total Economic Loss (in Billion)"]
         .sum()
         .nlargest(5)
         .index.tolist()
@@ -25,11 +26,8 @@ def make_time_series_chart(calfire_df, selected_counties=None):
         filtered_df = calfire_time_series[calfire_time_series["County"].isin(selected_counties)]
         selection = None
         opacity_rule = alt.value(1)
-
     color_scale = alt.Scale(scheme="category20")
-
     zoom = alt.selection_interval(bind="scales")
-
     timeseries_chart = alt.Chart(filtered_df).mark_line(point=True).encode(
         x=alt.X(
             "Year:O",
@@ -37,9 +35,10 @@ def make_time_series_chart(calfire_df, selected_counties=None):
             axis=alt.Axis(labelAngle=45, tickMinStep=1)
         ),
         y=alt.Y(
-            "Total Economic Loss:Q",
-            title="Total Economic Loss ($)",
-            scale=alt.Scale(zero=False)
+    "Total Economic Loss (in Billion):Q",
+    title="Total Economic Loss ($B)",  # Indicate it's in billions
+    scale=alt.Scale(zero=False),
+    axis=alt.Axis(format="$.2f")  # Format numbers correctly (e.g., 92.34B)
         ),
         color=alt.Color(
             "County:N",
@@ -51,14 +50,13 @@ def make_time_series_chart(calfire_df, selected_counties=None):
             )
         ),
         opacity=opacity_rule,
-        tooltip=["Year:O", "County", alt.Tooltip("Total Economic Loss:Q", format="$,.2f")]
+        tooltip=["Year:O", "County", alt.Tooltip("Total Economic Loss (in Billion):Q", title="Total Economic Loss (B)", format="$,.2f")]
     ).properties(
         title="Economic Loss Over Time",
         width=250,
         height=200
     ).add_selection(zoom)
-
     if not selected_counties:
         timeseries_chart = timeseries_chart.add_selection(selection)
-        
     return timeseries_chart
+       

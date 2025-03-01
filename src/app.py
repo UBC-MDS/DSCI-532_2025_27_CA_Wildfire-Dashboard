@@ -86,9 +86,9 @@ app.layout = dbc.Container([
 @callback(
     [Output('roof_chart', 'spec'),
      Output('damage_chart', 'spec'),
-     Output('structure_chart', 'spec')],
+     Output('structure_chart', 'spec'),
      Output('summary_chart', 'spec'),
-     Output('timeseries_chart', 'spec'),
+     Output('timeseries_chart', 'spec')],
     [Input('county', 'value'),
     Input('year', 'value'),
     Input('incident_number', 'value')]
