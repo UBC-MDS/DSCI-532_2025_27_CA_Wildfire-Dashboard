@@ -23,9 +23,9 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.FLATLY])
 server = app.server
 
 # Load wildfire data
-calfire_df = pd.read_csv("data/processed/cleaned_cal_fire.csv",low_memory=False)
+calfire_df = pd.read_csv("data/processed/cleaned_cal_fire.csv")
 counties = sorted(calfire_df["County"].dropna().unique())
-calfire_df["Incident Start Date"] = pd.to_datetime(calfire_df["Incident Start Date"], format="mixed")
+calfire_df["Incident Start Date"] = pd.to_datetime(calfire_df["Incident Start Date"], format="%m/%d/%Y %I:%M:%S %p")
 min_year = calfire_df['Incident Start Date'].min().year
 max_year = calfire_df['Incident Start Date'].max().year
 
@@ -56,7 +56,7 @@ global_widgets = [
                     max=max_year,
                     value=[min_year, max_year],
                     marks={year: str(year) for year in range(min_year, max_year+1, 2)},
-                    updatemode='drag')
+                    updatemode='mouseup') # Using mouseup instead of drag to reduce update calls and improve performance
 ] 
 
 def create_fire_damage_map_component(df):
@@ -105,9 +105,7 @@ damage_level=dvc.Vega(id='damage_chart',
 timeseries_chart = dvc.Vega(id='timeseries_chart', spec=make_time_series_chart(calfire_df).to_dict(format="vega"))# time series of cost of incidents
 structure_count=dvc.Vega(id='structure_chart',
                          spec=make_structure_chart(calfire_df).to_dict(format="vega")) # bar chart of damage by stucture category and county
-house_damage =[html.H3('house characteristic vs damage')]# house characteristic vs Damage level
-
-roof_chart = dvc.Vega(id='roof_chart', spec=make_roof_chart(calfire_df).to_dict(format="vega"))
+roof_chart = dvc.Vega(id='roof_chart', spec=make_roof_chart(calfire_df).to_dict(format="vega")) # house characteristic vs Damage level
 
 # Layout
 app.layout = dbc.Container([
@@ -170,10 +168,13 @@ app.layout = dbc.Container([
 
     
 ])
-
       
-
-
+@callback(
+    Output('fire_damage_map', 'figure'),
+    [Input('county', 'value'),
+     Input('year', 'value'),
+     Input('incident_number', 'value')]
+)
 def update_fire_damage_map(county, year, incident_number):
     # Load geojson file
     geojson_file_path = "data/raw/California_County_Boundaries.geojson"
@@ -185,17 +186,17 @@ def update_fire_damage_map(county, year, incident_number):
 
     # Handle multiple county selection properly
     if county and len(county) > 0:
-        filtered_df = filtered_df[filtered_df["County"].isin(county)]
+        filtered_df = filtered_df[filtered_df["County"].isin(list(county))]
 
     # Handle multiple incident numbers
     if incident_number and len(incident_number) > 0:
-        filtered_df = filtered_df[filtered_df["Incident Number"].isin(incident_number)]
+        filtered_df = filtered_df[filtered_df["Incident Number"].isin(list(incident_number))]
 
     # Aggregate fire damage count per county
     fire_count = filtered_df.groupby("County")["Damage"].count().reset_index(name="Fire_Count")
 
     # Merge with county boundaries
-    county_fire_data = county_boundaries.merge(fire_count, left_on="CountyName", right_on="County", how="left").fillna(0)
+    county_fire_data = county_boundaries.merge(fire_count, left_on="CountyName", right_on="County", how="left").infer_objects(copy=False).fillna(0)
 
     # Create choropleth map
     fig = px.choropleth(
@@ -221,21 +222,21 @@ def update_fire_damage_map(county, year, incident_number):
      Output('damage_chart', 'spec'),
      Output('structure_chart', 'spec'),
      Output('summary_card', 'children'),
-     Output('timeseries_chart', 'spec'),
-     Output('fire_damage_map', 'figure')],
+     Output('timeseries_chart', 'spec')],
     [Input('county', 'value'),
     Input('year', 'value'),
     Input('incident_number', 'value')]
 )
+
 def update_charts(county, year, incident_number):
     filtered_df = calfire_df[(calfire_df["Incident Start Date"].dt.year
                                   .between(year[0], year[1]))]
 
     if county:
-        filtered_df = filtered_df[filtered_df['County'].isin(county)]
+        filtered_df = filtered_df[filtered_df['County'].isin(list(county))]
     
     if incident_number:
-        filtered_df = filtered_df[filtered_df['Incident Number'].isin(incident_number)]
+        filtered_df = filtered_df[filtered_df['Incident Number'].isin(list(incident_number))]
 
     roof_chart = make_roof_chart(filtered_df)
     damage_chart = make_damage_chart(filtered_df)
