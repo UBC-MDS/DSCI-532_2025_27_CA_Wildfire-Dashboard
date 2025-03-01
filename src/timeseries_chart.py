@@ -8,11 +8,11 @@ def make_time_series_chart(calfire_df, selected_counties=None):
     calfire_time_series = calfire_df.groupby(
         [calfire_df["Incident Start Date"].dt.year, "County"]
     )["Assessed Improved Value"].sum().reset_index()
-    calfire_time_series.rename(columns={"Incident Start Date": "Year", "Assessed Improved Value": "Total Economic Loss (in Billion)"}, inplace=True)
-    calfire_time_series["Total Economic Loss (in Billion)"] /= 1e9
+    calfire_time_series.rename(columns={"Incident Start Date": "Year", "Assessed Improved Value": "Total Economic Loss (Billions of USD)"}, inplace=True)
+    calfire_time_series["Total Economic Loss (Billions of USD)"] /= 1e9
 
     top_5_counties = (
-        calfire_time_series.groupby("County")["Total Economic Loss (in Billion)"]
+        calfire_time_series.groupby("County")["Total Economic Loss (Billions of USD)"]
         .sum()
         .nlargest(5)
         .index.tolist()
@@ -35,10 +35,10 @@ def make_time_series_chart(calfire_df, selected_counties=None):
             axis=alt.Axis(labelAngle=45, tickMinStep=1)
         ),
         y=alt.Y(
-    "Total Economic Loss (in Billion):Q",
-    title="Total Economic Loss ($B)",  
+    "Total Economic Loss (Billions of USD):Q",
+    title="Total Economic Loss (Billions of USD)",  
     scale=alt.Scale(zero=False),
-    axis=alt.Axis(format="$.2f")  
+    axis=alt.Axis(format="$,.0f")  
         ),
         color=alt.Color(
             "County:N",
@@ -50,7 +50,7 @@ def make_time_series_chart(calfire_df, selected_counties=None):
             )
         ),
         opacity=opacity_rule,
-        tooltip=["Year:O", "County", alt.Tooltip("Total Economic Loss (in Billion):Q", title="Total Economic Loss (B)", format="$,.2f")]
+        tooltip=["Year:O", "County", alt.Tooltip("Total Economic Loss (Billions of USD):Q", title="Total Economic Loss (Billions of USD)", format="$,.0f")]
     ).properties(
         title="Economic Loss Over Time",
         width=250,
