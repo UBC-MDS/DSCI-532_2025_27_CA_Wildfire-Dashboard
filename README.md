@@ -9,22 +9,21 @@ Welcome to our California Wildfires Dashboard! This tool will give you insights 
 ## Motivation and Purpose
 California is highly susceptible to wildfires due to its dry, hot climate. With global warming intensifying, wildfires are expected to become more frequent and severe. Understanding their historical impact is crucial. Our dashboard consolidates key wildfire data into a single, accessible platform, offering valuable insights for local residents, policymakers, and anyone interested. By providing a comprehensive overview, it supports informed decision-making and effective prevention strategies to aid in mitigation efforts. 
 
-## Data Attribution
-This project uses data from the [CAL FIRE Damage Inspection (DINS) data](https://data.ca.gov/dataset/cal-fire-damage-inspection-dins-data) available from the California open data portal.
-
----
-
-## Usage
 With the California Wildfires Dashboard you can:
 - Explore the impact of wildfires across different counties in California
 - Analyze financial loss trends over time due to wildfires
 - Investigate how various building structures are affected by wildfires
 
-Access our Webapp [here](https://dsci-532-2025-27-ca-wildfire-dashboard.onrender.com/)
+## Data Attribution
+This project uses data from the [CAL FIRE Damage Inspection (DINS) data](https://data.ca.gov/dataset/cal-fire-damage-inspection-dins-data) available from the California open data portal.
+
+
+## Usage
+**Access our Webapp [here]**(https://dsci-532-2025-27-ca-wildfire-dashboard.onrender.com/)
 
 ### Dashboard in action
 Have a look at the following demo:
-![gif of California wildfire dashboard](../img/demo.gif)
+![gif of California wildfire dashboard](img/demo.gif)
 
 ## Installation and running the app locally
 To run the dashboard locally, please follow these steps:
