@@ -21,4 +21,4 @@ def make_summary_chart(calfire_df):
          height=100
      ).add_selection(selection)
 
-     return summary_chart 
+     return total_cost

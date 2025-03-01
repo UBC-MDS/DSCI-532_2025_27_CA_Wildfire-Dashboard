@@ -48,8 +48,6 @@ def make_structure_chart(calfire_df):
                                                 )
                                 ),
                 tooltip=["Structure Category", "Count"]
-                ).properties(
-                    title="Structure Damaged by Category in the Top 10 Most Affected Counties"
-                    ).interactive()
+                ).interactive()
     
     return structure_chart

@@ -38,19 +38,24 @@ county_boundaries = gpd.read_file(geojson_file_path)
 title = [html.H1('California Wildfire Dashboard'),
          html.H6('A one-stop shop for gleaning insights from California Wildfires data')]
 global_widgets = [
-    dbc.Label("County"),
+    html.H4('Filters',
+            style={"textAlign":"center"}),
+    dcc.Markdown("**County**",
+                 style={"textAlign":"center"}),
     dcc.Dropdown(id='county',
                  options = counties,
                  multi = True),
 
-    dbc.Label("Incident Number"),
+    dcc.Markdown("**Incident Number**",
+                 style={"textAlign":"center"}),
     dcc.Dropdown(id="incident_number", options=sorted(calfire_df["Incident Number"].dropna().unique()), value = 'id', multi= True),
-    dbc.Label("Year"),
+    dcc.Markdown("**Year**",
+                 style={"textAlign":"center"}),
     dcc.RangeSlider(id='year',
                     min=min_year,
                     max=max_year,
-                    value=[2013, 2025],
-                    marks={year: str(year) for year in range(min_year, max_year+2, 2)},
+                    value=[min_year, max_year],
+                    marks={year: str(year) for year in range(min_year, max_year+1, 2)},
                     updatemode='drag')
 ] 
 
@@ -85,7 +90,15 @@ def create_fire_damage_map_component(df):
 
 # inputs
 cali_map = cali_map = dcc.Graph(id="fire_damage_map") # map of california with
-summary_chart = dvc.Vega(id='summary_chart', spec=make_summary_chart(calfire_df).to_dict(format="vega"))
+summary_card = dbc.Card(
+                [dbc.CardHeader("Total Economic Loss",
+                                style={"textAlign": "center",
+                                       "fontWeight": "bold"}),
+                dbc.CardBody(f'${make_summary_chart(calfire_df):.0f} Billions USD',
+                             style={"textAlign": "center",
+                                    "fontSize": "21px"})],
+                id='summary_card')
+# dvc.Vega(id='summary_chart', spec=make_summary_chart(calfire_df).to_dict(format="vega"))
 # total lost value 
 damage_level=dvc.Vega(id='damage_chart', 
                       spec=make_damage_chart(calfire_df).to_dict(format="vega")) # donut chart of count of damage level
@@ -100,21 +113,47 @@ roof_chart = dvc.Vega(id='roof_chart', spec=make_roof_chart(calfire_df).to_dict(
 app.layout = dbc.Container([
     dbc.Row(dbc.Col(title)),
     dbc.Row([
-        dbc.Col(global_widgets, md=3),
-        dbc.Col(cali_map, md=6),
-        dbc.Col([
-        dbc.Row(
-                dbc.Col(html.Div(summary_chart, style={"text-align": "center", "margin-bottom": "5px"}))  # Moves Up
-            ),
-            dbc.Row(
-                dbc.Col(damage_level, style={"text-align": "center", "margin-top": "-30px"})  # Moves Up
-            )
-        ], md=3)
+        dbc.Col(
+            [dbc.Row(
+            global_widgets, 
+                style={
+                    "border":"1px solid black",
+                    "borderRadius": "10px",
+                    "padding": "10px",
+                }),
+                 dbc.Row(summary_card,
+                         style={"marginTop":"10px"}),
+                ],
+                md=3),
+        dbc.Col(cali_map)
     ]),
     dbc.Row([
-        dbc.Col(roof_chart),
-        dbc.Col(timeseries_chart),
-        dbc.Col(structure_count)
+        dbc.Col([
+            dbc.Label("House Damaged by Roof Type",
+                      style={"textAlign":"center",
+                             "fontSize": "20px",
+                             "fontWeight": "bold"}),
+            roof_chart]),
+        dbc.Col([
+            dbc.Label("Distribution of Damage Category",
+                       style={"textAlign":"center",
+                             "fontSize": "20px",
+                             "fontWeight": "bold"}),
+            damage_level]
+            )]),
+    dbc.Row([
+        dbc.Col([
+            dbc.Label("Economic Loss Over Time",
+                       style={"textAlign":"center",
+                             "fontSize": "20px",
+                             "fontWeight": "bold"}),
+            timeseries_chart]),
+        dbc.Col([
+            dbc.Label("Structures Damaged by Category in Top 10 Most Affected Counties",
+                       style={"textAlign":"center",
+                             "fontSize": "20px",
+                             "fontWeight": "bold"}),
+            structure_count])
     ]),
     dbc.Row([
     dbc.Col([
@@ -181,7 +220,7 @@ def update_fire_damage_map(county, year, incident_number):
     [Output('roof_chart', 'spec'),
      Output('damage_chart', 'spec'),
      Output('structure_chart', 'spec'),
-     Output('summary_chart', 'spec'),
+     Output('summary_card', 'children'),
      Output('timeseries_chart', 'spec'),
      Output('fire_damage_map', 'figure')],
     [Input('county', 'value'),
@@ -201,10 +240,13 @@ def update_charts(county, year, incident_number):
     roof_chart = make_roof_chart(filtered_df)
     damage_chart = make_damage_chart(filtered_df)
     structure_chart = make_structure_chart(filtered_df)
-    summary_chart = make_summary_chart(filtered_df)
+    summary_card_update = dbc.CardBody(f'${make_summary_chart(filtered_df):.0f} Billions USD',
+                             style={"textAlign": "center",
+                                    "fontSize": "21px"})
     timeseries_chart = make_time_series_chart(filtered_df)
-    return roof_chart.to_dict(format="vega"), damage_chart.to_dict(format="vega"), structure_chart.to_dict(format="vega"), summary_chart.to_dict(format="vega"), timeseries_chart.to_dict(format="vega")
+
+    return roof_chart.to_dict(format="vega"), damage_chart.to_dict(format="vega"), structure_chart.to_dict(format="vega"), summary_card_update, timeseries_chart.to_dict(format="vega")
 
 # Run the app/dashboard
 if __name__ == '__main__':
-    app.server.run(debug=True)
+    app.server.run(debug=False)
