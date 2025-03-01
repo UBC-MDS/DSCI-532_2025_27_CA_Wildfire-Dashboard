@@ -19,7 +19,7 @@ This project uses data from the [CAL FIRE Damage Inspection (DINS) data](https:/
 
 
 ## Usage
-**Access our Webapp [here](https://dsci-532-2025-27-ca-wildfire-dashboard.onrender.com/)**
+### Access our Webapp [here](https://dsci-532-2025-27-ca-wildfire-dashboard.onrender.com/)
 
 ### Dashboard in action
 Have a look at the following demo:
