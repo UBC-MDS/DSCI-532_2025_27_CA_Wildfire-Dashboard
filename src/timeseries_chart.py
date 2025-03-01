@@ -36,24 +36,23 @@ def make_time_series_chart(calfire_df, selected_counties=None):
         ),
         y=alt.Y(
     "Total Economic Loss (Billions of USD):Q",
-    title="Total Economic Loss (Billions of USD)",  
+    title="Total Economic Loss ($ Billions of USD)",  
     scale=alt.Scale(zero=False),
-    axis=alt.Axis(format="$,.0f")  
+    axis=alt.Axis(format=",.0f")  
         ),
         color=alt.Color(
             "County:N",
             title="Click Legend to Filter" if not selected_counties else "Selected Counties",
             scale=color_scale,
             legend=alt.Legend(
-                title="Click a County to Filter" if not selected_counties else "Selected Counties",
+                title="County" if not selected_counties else "Selected Counties",
                 orient="right"
             )
         ),
         opacity=opacity_rule,
         tooltip=["Year:O", "County", alt.Tooltip("Total Economic Loss (Billions of USD):Q", title="Total Economic Loss (Billions of USD)", format="$,.0f")]
     ).properties(
-        title="Economic Loss Over Time",
-        width=250,
+        width=400,
         height=200
     ).add_selection(zoom)
     if not selected_counties:

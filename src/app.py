@@ -94,7 +94,7 @@ summary_card = dbc.Card(
                 [dbc.CardHeader("Total Economic Loss",
                                 style={"textAlign": "center",
                                        "fontWeight": "bold"}),
-                dbc.CardBody(f'${make_summary_chart(calfire_df):.0f} USD Billions',
+                dbc.CardBody(f'${make_summary_chart(calfire_df):.0f} Billions USD',
                              style={"textAlign": "center",
                                     "fontSize": "21px"})],
                 id='summary_card')
@@ -128,11 +128,32 @@ app.layout = dbc.Container([
         dbc.Col(cali_map)
     ]),
     dbc.Row([
-        dbc.Col(roof_chart),
-        dbc.Col(damage_level, style={"text-align": "center", "margin-top": "-30px"})]),
+        dbc.Col([
+            dbc.Label("House Damaged by Roof Type",
+                      style={"textAlign":"center",
+                             "fontSize": "20px",
+                             "fontWeight": "bold"}),
+            roof_chart]),
+        dbc.Col([
+            dbc.Label("Distribution of Damage Category",
+                       style={"textAlign":"center",
+                             "fontSize": "20px",
+                             "fontWeight": "bold"}),
+            damage_level]
+            )]),
     dbc.Row([
-        dbc.Col(timeseries_chart),
-        dbc.Col(structure_count)
+        dbc.Col([
+            dbc.Label("Economic Loss Over Time",
+                       style={"textAlign":"center",
+                             "fontSize": "20px",
+                             "fontWeight": "bold"}),
+            timeseries_chart]),
+        dbc.Col([
+            dbc.Label("Structures Damaged by Category in Top 10 Most Affected Counties",
+                       style={"textAlign":"center",
+                             "fontSize": "20px",
+                             "fontWeight": "bold"}),
+            structure_count])
     ]),
     dbc.Row([
     dbc.Col([
@@ -219,7 +240,7 @@ def update_charts(county, year, incident_number):
     roof_chart = make_roof_chart(filtered_df)
     damage_chart = make_damage_chart(filtered_df)
     structure_chart = make_structure_chart(filtered_df)
-    summary_card_update = dbc.CardBody(f'${make_summary_chart(filtered_df):.0f} USD Billions',
+    summary_card_update = dbc.CardBody(f'${make_summary_chart(filtered_df):.0f} Billions USD',
                              style={"textAlign": "center",
                                     "fontSize": "21px"})
     timeseries_chart = make_time_series_chart(filtered_df)
