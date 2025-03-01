@@ -5,7 +5,6 @@ import dash_vega_components as dvc
 import pandas as pd
 import geopandas as gpd
 import plotly.express as px
-from src.data_import import load_calfire_df
 from src.roof_chart import make_roof_chart
 from src.damage_chart import make_damage_chart
 from src.structure_chart import make_structure_chart
@@ -114,4 +113,4 @@ def update_charts(county, year, incident_number):
 
 # Run the app/dashboard
 if __name__ == '__main__':
-    app.server.run(debug=True)
+    app.server.run(debug=False)
