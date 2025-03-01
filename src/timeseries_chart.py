@@ -36,9 +36,9 @@ def make_time_series_chart(calfire_df, selected_counties=None):
         ),
         y=alt.Y(
     "Total Economic Loss (in Billion):Q",
-    title="Total Economic Loss ($B)",  # Indicate it's in billions
+    title="Total Economic Loss ($B)",  
     scale=alt.Scale(zero=False),
-    axis=alt.Axis(format="$.2f")  # Format numbers correctly (e.g., 92.34B)
+    axis=alt.Axis(format="$.2f")  
         ),
         color=alt.Color(
             "County:N",

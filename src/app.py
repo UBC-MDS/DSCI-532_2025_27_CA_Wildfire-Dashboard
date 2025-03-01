@@ -47,7 +47,9 @@ global_widgets = [
                     value=[2013, 2025],
                     marks={year: str(year) for year in range(min_year, max_year+2, 2)},
                     updatemode='drag')
-] # inputs
+] 
+
+# inputs
 cali_map = [html.H3('California map')] # map of california with
 summary_chart = dvc.Vega(id='summary_chart', spec=make_summary_chart(calfire_df).to_dict(format="vega"))
 # total lost value 

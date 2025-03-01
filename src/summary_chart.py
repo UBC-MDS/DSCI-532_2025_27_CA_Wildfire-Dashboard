@@ -6,7 +6,7 @@ def make_summary_chart(calfire_df):
      if "Assessed Improved Value" not in calfire_df.columns or calfire_df.empty:
          return {}
 
-     total_cost = calfire_summary["Assessed Improved Value"].sum()/ 1e9
+     total_cost = calfire_summary["Assessed Improved Value"].sum()/ 1e9 #convert the values to Billion
 
      selection = alt.selection_single(on='mouseover', fields=['Total Economic Loss (in Billion)'], empty='none')
 
