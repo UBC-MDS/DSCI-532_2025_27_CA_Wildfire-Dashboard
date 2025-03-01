@@ -5,17 +5,20 @@ import dash_vega_components as dvc
 import pandas as pd
 import geopandas as gpd
 import plotly.express as px
-from src.roof_chart import make_roof_chart
-from src.damage_chart import make_damage_chart
-from src.structure_chart import make_structure_chart
-from src.summary_chart import make_summary_chart
-from src.timeseries_chart import make_time_series_chart
+# from src.roof_chart import make_roof_chart
+# from src.damage_chart import make_damage_chart
+# from src.structure_chart import make_structure_chart
+# from src.summary_chart import make_summary_chart
+# from src.timeseries_chart import make_time_series_chart
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
 
-# from roof_chart import make_roof_chart
-# from damage_chart import make_damage_chart
-# from structure_chart import make_structure_chart
-# from summary_chart import make_summary_chart
-# from timeseries_chart import make_time_series_chart
+from roof_chart import make_roof_chart
+from damage_chart import make_damage_chart
+from structure_chart import make_structure_chart
+from summary_chart import make_summary_chart
+from timeseries_chart import make_time_series_chart
 
 
 # Initiatlize the app
