@@ -28,6 +28,7 @@ Have a look at the following demo:
 ## Installation and running the app locally
 To run the dashboard locally, please follow these steps:
 1) **Install Dependencies**
+
 Clone the repository and install dependencies:
 ```bash
 git clone https://github.com/UBC-MDS/DSCI-532_2025_27_CA_Wildfire-Dashboard.git
@@ -35,6 +36,7 @@ cd DSCI-532_2025_27_CA_Wildfire-Dashboard
 conda env create --file environment.yaml
 ```
 2) **Run the app**
+
 You can run the dash app by running:
 ```bash
 conda activate 532-27
