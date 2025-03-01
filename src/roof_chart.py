@@ -48,7 +48,8 @@ def make_roof_chart(calfire_df):
                     ),  
         tooltip=["Roof Construction", "count()", "Damage"]
     ).properties(
-        title="House Damage by Roof Type"
+        width=400,
+        height=200
     ).interactive()
 
     return roof_chart
