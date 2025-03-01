@@ -42,7 +42,7 @@ You can run the dash app by running:
 conda activate 532-27
 python src/app.py
 ```
-The dashboard will be accessible at **`http://127.0.0.1:8050/`** in your browser.  
+The dashboard will be accessible at **`http://127.0.0.1:5000/`** in your browser.  
 
 ---
 
