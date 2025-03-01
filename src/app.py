@@ -103,7 +103,7 @@ app.layout = dbc.Container([
         dbc.Col(global_widgets, md=3),
         dbc.Col(cali_map, md=6),
         dbc.Col([
-         dbc.Row(
+        dbc.Row(
                 dbc.Col(html.Div(summary_chart, style={"text-align": "center", "margin-bottom": "5px"}))  # Moves Up
             ),
             dbc.Row(
@@ -111,19 +111,14 @@ app.layout = dbc.Container([
             )
         ], md=3)
     ]),
-  dbc.Row([
+    dbc.Row([
         dbc.Col(roof_chart),
         dbc.Col(timeseries_chart),
         dbc.Col(structure_count)
     ])
 ])
 
-@callback(
-    Output('fire_damage_map', 'figure'),
-    [Input('county', 'value'),
-     Input('year', 'value'),
-     Input('incident_number', 'value')]
-)
+
 def update_fire_damage_map(county, year, incident_number):
     # Load geojson file
     geojson_file_path = "data/raw/California_County_Boundaries.geojson"
@@ -171,7 +166,8 @@ def update_fire_damage_map(county, year, incident_number):
      Output('damage_chart', 'spec'),
      Output('structure_chart', 'spec'),
      Output('summary_chart', 'spec'),
-     Output('timeseries_chart', 'spec')],
+     Output('timeseries_chart', 'spec'),
+     Output('fire_damage_map', 'figure')],
     [Input('county', 'value'),
     Input('year', 'value'),
     Input('incident_number', 'value')]
