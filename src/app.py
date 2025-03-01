@@ -115,8 +115,24 @@ app.layout = dbc.Container([
         dbc.Col(roof_chart),
         dbc.Col(timeseries_chart),
         dbc.Col(structure_count)
-    ])
+    ]),
+    dbc.Row([
+    dbc.Col([
+        html.Hr(),
+        html.P("This dashboard provides insights into California wildfires, including their impact, trends, and affected areas."),
+        html.P("Developed by Gunisha Kaur, Thamer Aldawood, Elaine Chu and Forgive Agbesi."),
+        html.P([
+            "GitHub Repository: ",
+            html.A("View on GitHub", href="https://github.com/UBC-MDS/DSCI-532_2025_27_CA_Wildfire-Dashboard", target="_blank")
+        ]),
+        html.P(f"Last updated: {pd.to_datetime('today').strftime('%B %d, %Y')}")
+    ], style={"text-align": "center", "margin-top": "20px"})
 ])
+
+    
+])
+
+      
 
 
 def update_fire_damage_map(county, year, incident_number):
