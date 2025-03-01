@@ -32,7 +32,7 @@ def make_structure_chart(calfire_df):
                 title="County",
                 sort=top_10
                 ), 
-                x=alt.X("Count", title="Number of Structures damaged"),
+                x=alt.X("Count", title="Number of Structures Damaged"),
                 color=alt.Color("Structure_Renamed:N",
                                 title="Structure Category",
                                 scale=alt.Scale(scheme="paired"),
