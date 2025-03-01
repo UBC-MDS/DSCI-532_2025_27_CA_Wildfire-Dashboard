@@ -3,8 +3,6 @@ import altair as alt
 
 def make_roof_chart(calfire_df):
     calfire_roof = calfire_df.copy()
-    calfire_roof = calfire_roof[calfire_roof["Roof Construction"].notnull()]
-    calfire_roof = calfire_roof[calfire_roof["Roof Construction"] != ' ']
     calfire_roof = calfire_roof[calfire_roof["Roof Construction"] != 'Unknown']
 
     calfire_roof = calfire_roof[calfire_roof["Damage"] != 'Unknown']
