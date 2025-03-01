@@ -164,7 +164,7 @@ app.layout = dbc.Container([
             "GitHub Repository: ",
             html.A("View on GitHub", href="https://github.com/UBC-MDS/DSCI-532_2025_27_CA_Wildfire-Dashboard", target="_blank")
         ]),
-        html.P(f"Last updated: {pd.to_datetime('today').strftime('%B %d, %Y')}")
+        html.P(f"Last updated: March 1st, 2025")
     ], style={"text-align": "center", "margin-top": "20px"})
 ])
 
@@ -243,7 +243,7 @@ def update_charts(county, year, incident_number):
     roof_chart = make_roof_chart(filtered_df)
     damage_chart = make_damage_chart(filtered_df)
     structure_chart = make_structure_chart(filtered_df)
-    summary_card_update = dbc.CardBody(f'${make_summary_chart(filtered_df):.0f} Billions USD',
+    summary_card_update = dbc.CardBody(f'${make_summary_chart(filtered_df):.2f} Billions USD',
                              style={"textAlign": "center",
                                     "fontSize": "21px"})
     timeseries_chart = make_time_series_chart(filtered_df)
