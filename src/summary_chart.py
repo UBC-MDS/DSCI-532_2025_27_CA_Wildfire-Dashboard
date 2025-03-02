@@ -13,7 +13,7 @@ def make_summary_chart(calfire_df):
      summary_chart = alt.Chart(pd.DataFrame({"Total Economic Loss (Billions of USD)": [total_cost]})).mark_text(
          size=24, align='center', baseline='middle'
      ).encode(
-         text=alt.Text("Total Economic Loss (Billions of USD):Q", format=".0f"),
+         text=alt.Text("Total Economic Loss (Billions of USD):Q", format=".2f"),
          color=alt.condition(selection, alt.value('blue'), alt.value('red'))
      ).properties(
          title="Total Economic Loss (Billions of USD)",
