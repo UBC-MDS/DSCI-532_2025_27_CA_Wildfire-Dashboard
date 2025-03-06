@@ -34,10 +34,11 @@ max_year = calfire_df['Incident Start Date'].max().year
 
 
 # Load geojson data on county boundaries
-geojson_file_path = 'data/raw/California_County_Boundaries.geojson'
-county_boundaries = gpd.read_file(geojson_file_path)
+geojson_file_path = "data/raw/California_County_Boundaries.geojson"
+county_boundaries = gpd.read_file(geojson_file_path)[["CountyName", "geometry"]]
+county_boundaries["CountyName"] = county_boundaries["CountyName"].str.strip()
 
-# Components
+# Filters
 title = [html.H1('California Wildfire Dashboard'),
          html.H6('A one-stop shop for gleaning insights from California Wildfires data')]
 global_widgets = [
@@ -62,36 +63,36 @@ global_widgets = [
                     updatemode='mouseup') # Using mouseup instead of drag to reduce update calls and improve performance
 ] 
 
-def create_fire_damage_map_component(df):
+# def create_fire_damage_map_component(df):
 
-    geojson_file_path = "data/raw/California_County_Boundaries.geojson"
-    county_boundaries = gpd.read_file(geojson_file_path)[["CountyName", "geometry", "FireMAR"]]
+#     geojson_file_path = "data/raw/California_County_Boundaries.geojson"
+#     county_boundaries = gpd.read_file(geojson_file_path)[["CountyName", "geometry", "FireMAR"]]
 
-    county_boundaries["CountyName"] = county_boundaries["CountyName"].str.strip()
-    df["County"] = df["County"].str.strip()
+#     county_boundaries["CountyName"] = county_boundaries["CountyName"].str.strip()
+#     df["County"] = df["County"].str.strip()
 
-    calfire_map = df.groupby("County")["Damage"].count().reset_index(name="Fire_Count")
+#     calfire_map = df.groupby("County")["Damage"].count().reset_index(name="Fire_Count")
 
-    county_fire_data = county_boundaries.merge(calfire_map, left_on="CountyName", right_on="County", how="left").fillna(0)
+#     county_fire_data = county_boundaries.merge(calfire_map, left_on="CountyName", right_on="County", how="left").fillna(0)
 
-    fig = px.choropleth(
-        county_fire_data,
-        geojson=county_fire_data.geometry,
-        locations=county_fire_data.index,
-        color="Fire_Count", 
-        title="California Wildfire Damage by County",
-        labels={"Fire_Count": "Number of Fires"},
-        projection="mercator",
-        hover_name="CountyName",
-        color_continuous_scale="Reds",
-    )
+#     fig = px.choropleth(
+#         county_fire_data,
+#         geojson=county_fire_data.geometry,
+#         locations=county_fire_data.index,
+#         color="Fire_Count", 
+#         title="California Wildfire Damage by County",
+#         labels={"Fire_Count": "Number of Fires"},
+#         projection="mercator",
+#         hover_name="CountyName",
+#         color_continuous_scale="Reds",
+#     )
 
-    fig.update_geos(fitbounds="locations", visible=False)
+#     fig.update_geos(fitbounds="locations", visible=False)
 
-    return dcc.Graph(figure=fig)
+#     return dcc.Graph(figure=fig)
 
 
-# inputs
+# Components
 cali_map = cali_map = dcc.Graph(id="fire_damage_map") # map of california with
 summary_card = dbc.Card(
                 [dbc.CardHeader("Total Economic Loss",
@@ -178,11 +179,6 @@ app.layout = dbc.Container([
      Input('incident_number', 'value')]
 )
 def update_fire_damage_map(county, year, incident_number):
-    # Load geojson file
-    geojson_file_path = "data/raw/California_County_Boundaries.geojson"
-    county_boundaries = gpd.read_file(geojson_file_path)[["CountyName", "geometry"]]
-    county_boundaries["CountyName"] = county_boundaries["CountyName"].str.strip()
-
     # Start with the full dataset
     filtered_df = calfire_df[calfire_df["Incident Start Date"].dt.year.between(year[0], year[1])]
 
@@ -213,6 +209,8 @@ def update_fire_damage_map(county, year, incident_number):
         color_continuous_scale="Reds",
     )
 
+    fig.update_layout(clickmode='event+select')
+
     fig.update_geos(fitbounds="locations", visible=False)
 
     return fig
@@ -227,11 +225,14 @@ def update_fire_damage_map(county, year, incident_number):
      Output('timeseries_chart', 'spec')],
     [Input('county', 'value'),
     Input('year', 'value'),
-    Input('incident_number', 'value')]
+    Input('incident_number', 'value'),
+    Input('fire_damage_map', 'clickData')]
 )
 
-def update_charts(county, year, incident_number):
-    filtered_df = calfire_df[(calfire_df["Incident Start Date"].dt.year
+def update_charts(county, year, incident_number, clickData):
+    filtered_df = calfire_df.copy()
+
+    filtered_df = filtered_df[(filtered_df["Incident Start Date"].dt.year
                                   .between(year[0], year[1]))]
 
     if county:
@@ -239,6 +240,11 @@ def update_charts(county, year, incident_number):
     
     if incident_number:
         filtered_df = filtered_df[filtered_df['Incident Number'].isin(list(incident_number))]
+    
+    if clickData:
+        selected_counties = [point["hovertext"] for point in clickData["points"]]
+        # selected_counties = clickData["points"][0]["hovertext"]
+        filtered_df = filtered_df[filtered_df['County'].isin(list(selected_counties))]
 
     roof_chart = make_roof_chart(filtered_df)
     damage_chart = make_damage_chart(filtered_df)
@@ -252,4 +258,4 @@ def update_charts(county, year, incident_number):
 
 # Run the app/dashboard
 if __name__ == '__main__':
-    app.server.run(debug=False)
+    app.server.run(debug=True)
