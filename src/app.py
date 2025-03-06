@@ -184,4 +184,4 @@ def update_charts(county, year, incident_number, selectedData):
 
 # Run the app/dashboard
 if __name__ == '__main__':
-    app.server.run(debug=True)
+    app.server.run(debug=False)
