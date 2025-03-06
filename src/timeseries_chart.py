@@ -11,15 +11,15 @@ def make_time_series_chart(calfire_df, selected_counties=None):
     calfire_time_series.rename(columns={"Incident Start Date": "Year", "Assessed Improved Value": "Total Economic Loss (Billions of USD)"}, inplace=True)
     calfire_time_series["Total Economic Loss (Billions of USD)"] /= 1e9
 
-    top_5_counties = (
+    top_10_counties = (
         calfire_time_series.groupby("County")["Total Economic Loss (Billions of USD)"]
         .sum()
-        .nlargest(5)
+        .nlargest(10)
         .index.tolist()
     )
 
     if not selected_counties:
-        filtered_df = calfire_time_series[calfire_time_series["County"].isin(top_5_counties)]
+        filtered_df = calfire_time_series[calfire_time_series["County"].isin(top_10_counties)]
         selection = alt.selection_multi(fields=["County"], bind="legend", name="Select")
         opacity_rule = alt.condition(selection, alt.value(1), alt.value(0.2))
     else:
