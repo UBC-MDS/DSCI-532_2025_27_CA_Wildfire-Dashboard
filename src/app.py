@@ -18,7 +18,7 @@ except ModuleNotFoundError:
     from src.structure_chart import make_structure_chart
     from src.summary_chart import make_summary_chart
     from src.timeseries_chart import make_time_series_chart
-    from create_map import make_fire_damage_map
+    from src.create_map import make_fire_damage_map
 
 
 
