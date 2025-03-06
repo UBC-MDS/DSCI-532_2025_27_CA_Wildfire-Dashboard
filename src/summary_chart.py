@@ -4,7 +4,7 @@ import altair as alt
 def make_summary_chart(calfire_df):
      calfire_summary = calfire_df.copy()
      if "Assessed Improved Value" not in calfire_df.columns or calfire_df.empty:
-         return {}
+         return 0
 
      total_cost = calfire_summary["Assessed Improved Value"].sum()/ 1e9 #convert the values to Billion
 

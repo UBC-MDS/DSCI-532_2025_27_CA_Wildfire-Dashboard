@@ -180,13 +180,30 @@ def update_charts(county, year, incident_number):
     roof_chart = make_roof_chart(filtered_df)
     damage_chart = make_damage_chart(filtered_df)
     structure_chart = make_structure_chart(filtered_df)
-    summary_card_update = dbc.CardBody(f'${make_summary_chart(filtered_df):.2f} Billions USD',
-                             style={"textAlign": "center",
-                                    "fontSize": "21px"})
+    total_cost = make_summary_chart(filtered_df)  
+
+    summary_card_update = [  
+        dbc.CardHeader("Total Economic Loss",
+                       style={"textAlign": "center",
+                              "fontWeight": "bold"}),
+        dbc.CardBody(
+            f'${total_cost:.2f} Billions USD' if total_cost else "No Data Available",
+            style={"textAlign": "center", "fontSize": "21px"}
+        )
+    ]
+    
+
     timeseries_chart = make_time_series_chart(filtered_df)
     fire_damage_map = make_fire_damage_map(filtered_df)
 
-    return roof_chart.to_dict(format="vega"), damage_chart.to_dict(format="vega"), structure_chart.to_dict(format="vega"), summary_card_update, timeseries_chart.to_dict(format="vega"), fire_damage_map
+    return (
+        roof_chart.to_dict(format="vega"),
+        damage_chart.to_dict(format="vega"),
+        structure_chart.to_dict(format="vega"),
+        summary_card_update, 
+        timeseries_chart.to_dict(format="vega"),
+        fire_damage_map
+    )
 
 # Run the app/dashboard
 if __name__ == '__main__':
