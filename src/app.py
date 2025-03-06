@@ -131,7 +131,7 @@ app.layout = dbc.Container([
             "GitHub Repository: ",
             html.A("View on GitHub", href="https://github.com/UBC-MDS/DSCI-532_2025_27_CA_Wildfire-Dashboard", target="_blank")
         ]),
-        html.P(f"Last updated: March 1st, 2025")
+        html.P(f"Last updated: March 5th, 2025")
     ], style={"text-align": "center", "margin-top": "20px"})
 ])
 
