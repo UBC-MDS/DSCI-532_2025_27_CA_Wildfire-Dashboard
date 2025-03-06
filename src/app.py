@@ -11,12 +11,14 @@ try:
     from structure_chart import make_structure_chart
     from summary_chart import make_summary_chart
     from timeseries_chart import make_time_series_chart
+    from create_map import make_fire_damage_map
 except ModuleNotFoundError:
     from src.roof_chart import make_roof_chart
     from src.damage_chart import make_damage_chart
     from src.structure_chart import make_structure_chart
     from src.summary_chart import make_summary_chart
     from src.timeseries_chart import make_time_series_chart
+    from src.create_map import make_fire_damage_map
 
 # Initiatlize the app
 app = Dash(__name__, external_stylesheets=[dbc.themes.FLATLY])
