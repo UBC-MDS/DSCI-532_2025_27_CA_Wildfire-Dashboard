@@ -20,9 +20,6 @@ except ModuleNotFoundError:
     from src.timeseries_chart import make_time_series_chart
     from src.create_map import make_fire_damage_map
 
-
-
-
 # Initiatlize the app
 app = Dash(__name__, external_stylesheets=[dbc.themes.FLATLY])
 server = app.server
@@ -34,12 +31,7 @@ calfire_df["Incident Start Date"] = pd.to_datetime(calfire_df["Incident Start Da
 min_year = calfire_df['Incident Start Date'].min().year
 max_year = calfire_df['Incident Start Date'].max().year
 
-
-# Load geojson data on county boundaries
-#geojson_file_path = 'data/raw/California_County_Boundaries.geojson'
-#county_boundaries = gpd.read_file(geojson_file_path)
-
-# Components
+# Filters
 title = [html.H1('California Wildfire Dashboard'),
          html.H6('A one-stop shop for gleaning insights from California Wildfires data')]
 global_widgets = [
@@ -64,8 +56,9 @@ global_widgets = [
                     updatemode='mouseup') # Using mouseup instead of drag to reduce update calls and improve performance
 ] 
 
+# def create_fire_damage_map_component(df):
 
-# inputs
+# Components
 cali_map = dcc.Graph(id="fire_damage_map")#,spec= make_fire_damage_map(calfire_df)) # map of california with
 summary_card = dbc.Card(
                 [dbc.CardHeader("Total Economic Loss",
@@ -117,7 +110,7 @@ app.layout = dbc.Container([
             )]),
     dbc.Row([
         dbc.Col([
-            dbc.Label("Economic Loss Over Time",
+            dbc.Label("Top 10 Counties with Maximum Economic Loss Over Time",
                        style={"textAlign":"center",
                              "fontSize": "20px",
                              "fontWeight": "bold"}),
@@ -138,22 +131,13 @@ app.layout = dbc.Container([
             "GitHub Repository: ",
             html.A("View on GitHub", href="https://github.com/UBC-MDS/DSCI-532_2025_27_CA_Wildfire-Dashboard", target="_blank")
         ]),
-        html.P(f"Last updated: March 1st, 2025")
+        html.P(f"Last updated: March 5th, 2025")
     ], style={"text-align": "center", "margin-top": "20px"})
 ])
 
     
 ])
       
-# @callback(
-    
-#     [Input('county', 'value'),
-#      Input('year', 'value'),
-#      Input('incident_number', 'value')]
-# )
-
-
-
 # Server side callbacks/reactivity
 @callback(
     [Output('roof_chart', 'spec'),
@@ -161,22 +145,30 @@ app.layout = dbc.Container([
      Output('structure_chart', 'spec'),
      Output('summary_card', 'children'),
      Output('timeseries_chart', 'spec'),
-     Output('fire_damage_map', 'figure')],
+     Output('fire_damage_map', 'figure'),
+     Output('county', 'value'),
+     Output('fire_damage_map', 'selectedData')],
     [Input('county', 'value'),
     Input('year', 'value'),
-    Input('incident_number', 'value')]
+    Input('incident_number', 'value'),
+    Input('fire_damage_map', 'selectedData')
+    ]
 )
 
-def update_charts(county, year, incident_number):
-    filtered_df = calfire_df[(calfire_df["Incident Start Date"].dt.year
-                                  .between(year[0], year[1]))]
+def update_charts(county, year, incident_number, selectedData):
 
+    filtered_df = calfire_df[(calfire_df["Incident Start Date"].dt.year.between(year[0], year[1]))]
+
+    if selectedData:
+        selected_counties = [point["hovertext"] for point in selectedData["points"]]
+        county = selected_counties
+        
     if county:
         filtered_df = filtered_df[filtered_df['County'].isin(list(county))]
     
     if incident_number:
         filtered_df = filtered_df[filtered_df['Incident Number'].isin(list(incident_number))]
-
+         
     roof_chart = make_roof_chart(filtered_df)
     damage_chart = make_damage_chart(filtered_df)
     structure_chart = make_structure_chart(filtered_df)
@@ -194,7 +186,10 @@ def update_charts(county, year, incident_number):
     
 
     timeseries_chart = make_time_series_chart(filtered_df)
-    fire_damage_map = make_fire_damage_map(filtered_df)
+    fire_damage_map = make_fire_damage_map(filtered_df, selectedData)
+
+    selectedData = None # to avoid overriding new changes in filter by existing selected counties in map
+
 
     return (
         roof_chart.to_dict(format="vega"),
@@ -202,7 +197,9 @@ def update_charts(county, year, incident_number):
         structure_chart.to_dict(format="vega"),
         summary_card_update, 
         timeseries_chart.to_dict(format="vega"),
-        fire_damage_map
+        fire_damage_map,
+        county,
+        selectedData
     )
 
 # Run the app/dashboard
