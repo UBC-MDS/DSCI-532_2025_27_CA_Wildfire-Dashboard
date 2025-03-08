@@ -110,7 +110,7 @@ app.layout = dbc.Container([
             )]),
     dbc.Row([
         dbc.Col([
-            dbc.Label("Economic Loss Over Time",
+            dbc.Label("Top 10 Counties with Maximum Economic Loss Over Time",
                        style={"textAlign":"center",
                              "fontSize": "20px",
                              "fontWeight": "bold"}),
