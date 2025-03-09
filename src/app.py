@@ -89,10 +89,9 @@ app.layout = dbc.Container([
                     "padding": "10px",
                 }),
                  dbc.Row(summary_card,
-                         style={"marginTop":"10px"}),
-                ],
+                         style={"marginTop":"10px"}),],
                 md=3),
-        dbc.Col(cali_map)
+        dbc.Col(dcc.Loading(id="loading-cali-map", children=[cali_map]))
     ]),
     dbc.Row([
         dbc.Col([
@@ -100,27 +99,27 @@ app.layout = dbc.Container([
                       style={"textAlign":"center",
                              "fontSize": "20px",
                              "fontWeight": "bold"}),
-            roof_chart]),
+            dcc.Loading(id="loading-roof-chart", children=[roof_chart])]),
         dbc.Col([
             dbc.Label("Distribution of Damage Category",
                        style={"textAlign":"center",
                              "fontSize": "20px",
                              "fontWeight": "bold"}),
-            damage_level]
-            )]),
+            dcc.Loading(id="loading-damage-chart", children=[damage_level])])
+    ]),
     dbc.Row([
         dbc.Col([
             dbc.Label("Top 10 Counties with Maximum Economic Loss Over Time",
                        style={"textAlign":"center",
                              "fontSize": "20px",
                              "fontWeight": "bold"}),
-            timeseries_chart]),
+            dcc.Loading(id="loading-timeseries-chart", children=[timeseries_chart])]),
         dbc.Col([
             dbc.Label("Structures Damaged by Category in Top 10 Most Affected Counties",
                        style={"textAlign":"center",
                              "fontSize": "20px",
                              "fontWeight": "bold"}),
-            structure_count])
+            dcc.Loading(id="loading-structure-chart", children=[structure_count])])
     ]),
     dbc.Row([
     dbc.Col([
