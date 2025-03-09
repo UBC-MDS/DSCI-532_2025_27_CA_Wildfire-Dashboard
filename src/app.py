@@ -101,9 +101,9 @@ app_info = [
     html.Div(
         "On the left, you can filter by specific or multiple counties and select a year range of interest. If you know the fire's incident ID, you can filter by that as well.", style={'font-size': '16px'}
     ),
-    html.Div("On the right, you'll find a map of California. Hovering over a county will display a wildfire damage summary, and you can also use the map to select counties of interest.",
+    html.Div("On the right, you'll find a map of California. Hovering over a county will display a wildfire damage summary, selecting counties on the map will also filter for them.",
              style={'font-size': '16px'}),
-    html.Div("Below the map, you can explore the different charts that contains information on the financial loss and the degree of damage based on the structure types", style={'font-size': '16px'})   
+    html.Div("Below the map, you can explore different charts that contains information on the financial loss and the degree of damage based on the structure types.", style={'font-size': '16px'})   
 ]
 
 info_section = dbc.Collapse(
@@ -137,7 +137,7 @@ app.layout = dbc.Container([
         dbc.Col(
             global_widgets, 
             style={"background-color":"lightgrey",
-                    "padding": "10px"},
+                    "margin-left": "10px"},
                 md=3),
         dbc.Col(
             [dbc.Row(
@@ -146,7 +146,6 @@ app.layout = dbc.Container([
                                 style={"textAlign": "center",
                                        "fontWeight": "bold",
                                         "fontSize": main_font_size,
-                                        # 'border':'none',
                                         'background-color': theme_color,
                                         'color':main_font_color}),
                     dcc.Loading(id="loading-cali-map", children=[cali_map])],
@@ -162,6 +161,19 @@ app.layout = dbc.Container([
                     ],
                 className="position-relative"   
             ),
+            dbc.Row(
+                    [
+                        html.P(
+                            "* Hover to view county summary; click to filter.",
+                            style={"text-align": "center",
+                                   "font-size": "16px",
+                                   "position": "absolute",
+                                    "bottom": 0,
+                                    "right": 0},
+                        )
+                    ],
+                    className="position-relative" 
+                    ),
             dbc.Row([
                 dbc.Col([
                     dbc.Card(
@@ -314,4 +326,4 @@ def toggle_button(n, is_open):
 
 # Run the app/dashboard
 if __name__ == '__main__':
-    app.server.run(debug=False)
+    app.server.run(debug=True)
