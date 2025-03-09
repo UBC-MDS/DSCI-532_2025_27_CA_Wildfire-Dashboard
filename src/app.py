@@ -103,7 +103,7 @@ app_info = [
     ),
     html.Div("On the right, you'll find a map of California. Hovering over a county will display a wildfire damage summary, selecting counties on the map will also filter for them.",
              style={'font-size': '16px'}),
-    html.Div("Below the map, you can explore different charts that contains information on the financial loss and the degree of damage based on the structure types.", style={'font-size': '16px'})   
+    html.Div("Below the map, explore in detail the financial impact of wildfires on different counties, the extent of building damage, and the types of building materials affected.", style={'font-size': '16px'})   
 ]
 
 info_section = dbc.Collapse(
@@ -231,7 +231,6 @@ app.layout = dbc.Container([
     dbc.Row(
     dbc.Col([
         html.Hr(),
-        html.P("This dashboard provides insights into California wildfires, including their impact, trends, and affected areas."),
         html.P("Developed by Gunisha Kaur, Thamer Aldawood, Elaine Chu and Forgive Agbesi."),
         html.P([
             "GitHub Repository: ",
@@ -326,4 +325,4 @@ def toggle_button(n, is_open):
 
 # Run the app/dashboard
 if __name__ == '__main__':
-    app.server.run(debug=True)
+    app.server.run(debug=False)
