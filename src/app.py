@@ -32,10 +32,11 @@ min_year = calfire_df['Incident Start Date'].min().year
 max_year = calfire_df['Incident Start Date'].max().year
 theme_color = "#e89a66"
 main_font_size = "18px"
+main_font_color= "white"
 
 # Filters
 title = [html.H1('California Wildfire Dashboard',
-                 style={'color':"white"})]
+                 style={'color':main_font_color})]
 global_widgets = [
     html.H4('Filters',
             style={"textAlign":"center"}),
@@ -68,8 +69,9 @@ summary_card = dbc.Card(
                                 style={"textAlign": "center",
                                        "fontWeight": "bold",
                                        "background-color": theme_color,
-                                        "fontSize": main_font_size}),
-                dbc.CardBody(f'${make_summary_chart(calfire_df):.0f} Billions USD',
+                                        "fontSize": main_font_size,
+                                        'color':main_font_color}),
+                dbc.CardBody(f'${make_summary_chart(calfire_df):.2f} Billions USD',
                              style={"textAlign": "center",
                                     "fontSize": "21px"})],
                 id='summary_card')
@@ -108,7 +110,9 @@ info_section = dbc.Collapse(
         app_info,
         id="info",
         style ={'background-color':theme_color,
-        'padding-left': '10px'}
+        'padding-left': '30px',
+        'padding-bottom': '12px',
+        'color':main_font_color}
 )
 
 # Layout
@@ -125,51 +129,84 @@ app.layout = dbc.Container([
                 ],
                 style={'background-color': theme_color,
                        'padding': 10}),
+
     dbc.Row(info_section,
             style={"margin-top": "0px"}),
-    dbc.Row([
+
+     dbc.Row([
+        dbc.Col(
+            global_widgets, 
+            style={"background-color":"lightgrey",
+                    "padding": "10px"},
+                md=3),
         dbc.Col(
             [dbc.Row(
-            global_widgets, 
-                style={
-                    "border":"1px solid black",
-                    "borderRadius": "10px",
-                    "padding": "10px",
-                }),
-                 dbc.Row(summary_card,
-                         style={"marginTop":"10px"}),],
-                md=3),
-        dbc.Col(dcc.Loading(id="loading-cali-map", children=[cali_map]))
-    ]),
-    dbc.Row([
-        dbc.Col([
-            dbc.Label("House Damaged by Roof Type",
-                      style={"textAlign":"center",
-                             "fontSize": "20px",
-                             "fontWeight": "bold"}),
-            dcc.Loading(id="loading-roof-chart", children=[roof_chart])]),
-        dbc.Col([
-            dbc.Label("Distribution of Damage Category",
-                       style={"textAlign":"center",
-                             "fontSize": "20px",
-                             "fontWeight": "bold"}),
-            dcc.Loading(id="loading-damage-chart", children=[damage_level])])
-    ]),
-    dbc.Row([
-        dbc.Col([
-            dbc.Label("Top 10 Counties with Maximum Economic Loss Over Time",
-                       style={"textAlign":"center",
-                             "fontSize": "20px",
-                             "fontWeight": "bold"}),
-            dcc.Loading(id="loading-timeseries-chart", children=[timeseries_chart])]),
-        dbc.Col([
-            dbc.Label("Structures Damaged by Category in Top 10 Most Affected Counties",
-                       style={"textAlign":"center",
-                             "fontSize": "20px",
-                             "fontWeight": "bold"}),
-            dcc.Loading(id="loading-structure-chart", children=[structure_count])])
-    ]),
-    dbc.Row([
+                dbc.Card(
+                    [dbc.CardHeader("California Wildfire Damage by County",
+                                style={"textAlign": "center",
+                                       "fontWeight": "bold",
+                                        "fontSize": main_font_size,
+                                        'border':'none',
+                                        'background-color': theme_color,
+                                        'color':main_font_color}),
+                    dcc.Loading(id="loading-cali-map", children=[cali_map])],
+                style={'border':'none'})),
+            dbc.Row(summary_card, style={"marginTop":"10px"}),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card(
+                        [dbc.CardHeader("House Damaged by Roof Type",
+                                        style={"textAlign": "center",
+                                               "fontWeight": "bold",
+                                               "background-color": theme_color,
+                                               "fontSize": main_font_size,
+                                               'color':main_font_color}),
+                        dbc.CardBody(dcc.Loading(id="loading-roof-chart", children=[roof_chart]),
+                                     style={"height": "280px"})],
+                                     id="roof_card"
+                                     )],
+                    md=6),
+                dbc.Col([
+                    dbc.Card(
+                        [dbc.CardHeader("Distribution of Damage Category",
+                                        style={"textAlign": "center",
+                                               "fontWeight": "bold",
+                                               "background-color": theme_color,
+                                               "fontSize": main_font_size,
+                                               'color':main_font_color}),
+                        dbc.CardBody(dcc.Loading(id="loading-damage-chart", children=[damage_level]),
+                                     style={"height": "280px"})],
+                        id="damage_card"
+            )])],
+            style={"marginTop": "20px"}),
+            dbc.Row([
+                dbc.Col([
+                    dbc.Card(
+                        [dbc.CardHeader("Top 10 Counties with Most Structures Damaged",
+                                style={"textAlign": "center",
+                                       "fontWeight": "bold",
+                                       "background-color": theme_color,
+                                        "fontSize": main_font_size,
+                                        'color':main_font_color}),
+                        dbc.CardBody(dcc.Loading(id="loading-structure-chart", children=[structure_count]),
+                                    style={"height": "280px"})
+                        ]
+                        )
+                        ]),
+                dbc.Col([
+                    dbc.Card(
+                        [dbc.CardHeader("Top 10 Counties with Maximum Economic Loss Over Time",
+                                style={"textAlign": "center",
+                                       "fontWeight": "bold",
+                                       "background-color": theme_color,
+                                        "fontSize": main_font_size,
+                                        'color':main_font_color}),
+                        dbc.CardBody(dcc.Loading(id="loading-timeseries-chart", children=[timeseries_chart]),
+                             style={"height": "280px"})]
+                )])],
+            style={"marginTop": "20px"})])
+            ]),
+    dbc.Row(
     dbc.Col([
         html.Hr(),
         html.P("This dashboard provides insights into California wildfires, including their impact, trends, and affected areas."),
@@ -179,11 +216,12 @@ app.layout = dbc.Container([
             html.A("View on GitHub", href="https://github.com/UBC-MDS/DSCI-532_2025_27_CA_Wildfire-Dashboard", target="_blank")
         ]),
         html.P(f"Last updated: March 5th, 2025")
-    ], style={"text-align": "center", "margin-top": "20px"})
-])
-
-    
-])
+    ], style={"text-align": "center", "margin-top": "20px"}))],
+    fluid=True,
+    style={'margin': 0,
+           'padding': 0,
+           'overflow-x': 'hidden'}
+    )
       
 # Server side callbacks/reactivity
 @callback(
@@ -224,7 +262,10 @@ def update_charts(county, year, incident_number, selectedData):
     summary_card_update = [  
         dbc.CardHeader("Total Economic Loss",
                        style={"textAlign": "center",
-                              "fontWeight": "bold"}),
+                              "fontWeight": "bold",
+                              "background-color": theme_color,
+                                "fontSize": main_font_size,
+                              'color':main_font_color}),
         dbc.CardBody(
             f'${total_cost:.2f} Billions USD' if total_cost else "No Data Available",
             style={"textAlign": "center", "fontSize": "21px"}
