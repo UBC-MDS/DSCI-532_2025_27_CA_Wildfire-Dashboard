@@ -26,21 +26,18 @@ county_boundaries = gpd.read_file(geojson_file_path)[["CountyName", "geometry"]]
 county_boundaries["CountyName"] = county_boundaries["CountyName"].str.strip()
 
 def plot_map(county_data, selectedData=None):
-    #county_data = county_data.reset_index(drop=True)
+    county_data = county_data.reset_index(drop=True)
+    
     fig = px.choropleth(
         county_data,
         geojson=county_data.geometry,
         locations=county_data.index,
         color="Fire_Count",
-        title="California Wildfire Damage by County",
-        labels={"Fire_Count": "Number of Fires", "Assessed_Value_B": "Assessed Value"},
+        labels={"Fire_Count": "Number of Fires", "Assessed_Value_B": "Economic Loss"},
         projection="mercator",
         hover_name="CountyName", 
         color_continuous_scale="Reds",
-        hover_data={
-            "Assessed_Value_B": True,
-            "Fire_Count": True
-        },
+        hover_data={"CountyName": False, "Fire_Count": True, "Assessed_Value_B": True},
         custom_data=["Assessed_Value_B"]   
     )
     
