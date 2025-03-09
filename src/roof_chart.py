@@ -30,7 +30,7 @@ def make_roof_chart(calfire_df):
 
     roof_chart = alt.Chart(calfire_roof).mark_bar().encode(
         y=alt.Y("Roof Construction:N", 
-                title="Roof Type", 
+                title=None, 
                 sort=roof_order  # Sort by total house count (descending)
             ),  
         x=alt.X("count()", title="Number of Houses"),

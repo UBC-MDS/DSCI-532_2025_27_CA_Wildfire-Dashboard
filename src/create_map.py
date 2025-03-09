@@ -16,7 +16,6 @@ def plot_map(county_data, selectedData=None):
         geojson=county_data.geometry,
         locations=county_data.index,
         color="Fire_Count",
-        title="California Wildfire Damage by County",
         labels={"Fire_Count": "Number of Fires"},
         projection="mercator",
         hover_name="CountyName",
