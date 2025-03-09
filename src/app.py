@@ -30,7 +30,7 @@ counties = sorted(calfire_df["County"].dropna().unique())
 calfire_df["Incident Start Date"] = pd.to_datetime(calfire_df["Incident Start Date"], format="%m/%d/%Y %I:%M:%S %p")
 min_year = calfire_df['Incident Start Date'].min().year
 max_year = calfire_df['Incident Start Date'].max().year
-theme_color = "#e89a66"
+theme_color = "#e88b10"
 main_font_size = "18px"
 main_font_color= "white"
 
@@ -146,12 +146,22 @@ app.layout = dbc.Container([
                                 style={"textAlign": "center",
                                        "fontWeight": "bold",
                                         "fontSize": main_font_size,
-                                        'border':'none',
+                                        # 'border':'none',
                                         'background-color': theme_color,
                                         'color':main_font_color}),
                     dcc.Loading(id="loading-cali-map", children=[cali_map])],
                 style={'border':'none'})),
-            dbc.Row(summary_card, style={"marginTop":"10px"}),
+            dbc.Row([
+                dbc.Col(summary_card,
+                    width={"size": 3, "offset": 0}, 
+                    style={"marginTop":"10px",
+                           "position": "absolute",
+                            "bottom": 0,
+                            "left": 0,}
+                        )
+                    ],
+                className="position-relative"   
+            ),
             dbc.Row([
                 dbc.Col([
                     dbc.Card(
