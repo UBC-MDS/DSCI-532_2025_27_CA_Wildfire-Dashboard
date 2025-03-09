@@ -48,6 +48,9 @@ def make_structure_chart(calfire_df):
                                                 )
                                 ),
                 tooltip=["Structure Category", "Count"]
-                ).interactive()
+                ).properties(
+        width=400,
+        height=200
+    ).interactive()
     
     return structure_chart
