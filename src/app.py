@@ -1,4 +1,4 @@
-from dash import Dash, dcc, callback, Output, Input, html
+from dash import Dash, dcc, callback, Output, Input, html, State
 import altair as alt
 import dash_bootstrap_components as dbc
 import dash_vega_components as dvc
@@ -30,10 +30,12 @@ counties = sorted(calfire_df["County"].dropna().unique())
 calfire_df["Incident Start Date"] = pd.to_datetime(calfire_df["Incident Start Date"], format="%m/%d/%Y %I:%M:%S %p")
 min_year = calfire_df['Incident Start Date'].min().year
 max_year = calfire_df['Incident Start Date'].max().year
+theme_color = "#e89a66"
+main_font_size = "18px"
 
 # Filters
-title = [html.H1('California Wildfire Dashboard'),
-         html.H6('A one-stop shop for gleaning insights from California Wildfires data')]
+title = [html.H1('California Wildfire Dashboard',
+                 style={'color':"white"})]
 global_widgets = [
     html.H4('Filters',
             style={"textAlign":"center"}),
@@ -51,19 +53,22 @@ global_widgets = [
     dcc.RangeSlider(id='year',
                     min=min_year,
                     max=max_year,
+                    step=1,
                     value=[min_year, max_year],
                     marks={year: str(year) for year in range(min_year, max_year+1, 2)},
                     updatemode='mouseup') # Using mouseup instead of drag to reduce update calls and improve performance
 ] 
 
-# def create_fire_damage_map_component(df):
+
 
 # Components
 cali_map = dcc.Graph(id="fire_damage_map")#,spec= make_fire_damage_map(calfire_df)) # map of california with
 summary_card = dbc.Card(
                 [dbc.CardHeader("Total Economic Loss",
                                 style={"textAlign": "center",
-                                       "fontWeight": "bold"}),
+                                       "fontWeight": "bold",
+                                       "background-color": theme_color,
+                                        "fontSize": main_font_size}),
                 dbc.CardBody(f'${make_summary_chart(calfire_df):.0f} Billions USD',
                              style={"textAlign": "center",
                                     "fontSize": "21px"})],
@@ -75,10 +80,53 @@ timeseries_chart = dvc.Vega(id='timeseries_chart', spec=make_time_series_chart(c
 structure_count=dvc.Vega(id='structure_chart',
                          spec=make_structure_chart(calfire_df).to_dict(format="vega")) # bar chart of damage by stucture category and county
 roof_chart = dvc.Vega(id='roof_chart', spec=make_roof_chart(calfire_df).to_dict(format="vega")) # house characteristic vs Damage level
+info_button = dbc.Button(
+    "Learn More!",
+    id="info-button",
+    outline=False,
+    style={
+        'width': '150px',
+        'background-color': 'steelblue',
+        "font-weight": "bold",
+        'color': 'white'
+    }
+)
+
+app_info = [
+    html.Div(
+        "Welcome to the California Wildfire Dashboard! A one-stop shop for gleaning insights from California Wildfires data. Here you can explore the impact of wildfires across different counties in California for the past decade!", style={'font-size': '16px'}
+    ),
+    html.Div(
+        "On the left, you can filter by specific or multiple counties and select a year range of interest. If you know the fire's incident ID, you can filter by that as well.", style={'font-size': '16px'}
+    ),
+    html.Div("On the right, you'll find a map of California. Hovering over a county will display a wildfire damage summary, and you can also use the map to select counties of interest.",
+             style={'font-size': '16px'}),
+    html.Div("Below the map, you can explore the different charts that contains information on the financial loss and the degree of damage based on the structure types", style={'font-size': '16px'})   
+]
+
+info_section = dbc.Collapse(
+        app_info,
+        id="info",
+        style ={'background-color':theme_color,
+        'padding-left': '10px'}
+)
 
 # Layout
 app.layout = dbc.Container([
-    dbc.Row(dbc.Col(title)),
+    dbc.Row([
+                dbc.Col(title),
+                dbc.Col(html.Div(info_button),
+                        className="text-right",
+                        width="auto",
+                        style={'background-color':'transparent',
+                               'padding-right': '24px',
+                               'padding-top': '12px',
+                               'padding-bottom': '12px'})
+                ],
+                style={'background-color': theme_color,
+                       'padding': 10}),
+    dbc.Row(info_section,
+            style={"margin-top": "0px"}),
     dbc.Row([
         dbc.Col(
             [dbc.Row(
@@ -201,6 +249,18 @@ def update_charts(county, year, incident_number, selectedData):
         selectedData
     )
 
+@callback(
+    Output("info", "is_open"),
+    [Input("info-button", "n_clicks")],
+    [State("info", "is_open")],  
+)
+def toggle_button(n, is_open):
+    print(n)  
+    print(is_open)  
+    if n:
+        return not is_open
+    return is_open
+
 # Run the app/dashboard
 if __name__ == '__main__':
-    app.server.run(debug=False)
+    app.server.run(debug=True)
