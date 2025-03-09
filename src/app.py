@@ -314,4 +314,4 @@ def toggle_button(n, is_open):
 
 # Run the app/dashboard
 if __name__ == '__main__':
-    app.server.run(debug=True)
+    app.server.run(debug=False)
