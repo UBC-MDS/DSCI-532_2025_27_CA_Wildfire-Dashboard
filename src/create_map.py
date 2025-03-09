@@ -1,14 +1,5 @@
-from dash import dcc
 import plotly.express as px
-import altair as alt
-import dash_bootstrap_components as dbc
-import dash_vega_components as dvc
-import pandas as pd
-import geopandas as gpd
-
-geojson_file_path = "data/raw/California_County_Boundaries.geojson"
-county_boundaries = gpd.read_file(geojson_file_path)[["CountyName", "geometry"]]
-county_boundaries["CountyName"] = county_boundaries["CountyName"].str.strip()
+from .data import county_boundaries
     
 def plot_map(county_data, selectedData=None):
     fig = px.choropleth(
