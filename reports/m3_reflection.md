@@ -46,7 +46,7 @@
 ## **Current Limitations & Future Improvements**
 
 ### **Limitations**
-- The "Structures Damaged by Category" chart height changes with county selection; a fixed height would ensure consistency.  
+- Selecting multiple counties from the map is only possible while holding the "shift" button. Once the map is updated based on your selection, you can only edit your selection using the filter bar or create a new selection on the map.  
 - The map tooltip struggled with category-based counts due to data inconsistencies and Plotly limitations.  
  
 
