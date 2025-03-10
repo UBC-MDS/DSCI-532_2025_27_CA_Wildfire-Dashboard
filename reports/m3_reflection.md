@@ -19,9 +19,7 @@
 - **For Challenging Question**: We added a loading indicator for real-time feedback during updates, improving user experience and preventing confusion about lag. Inspired by Group 17’s design:(https://github.com/UBC-MDS/DSCI-532_2025_17_pharma_spend_dashboard).  
 
 ## **Features Not Implemented**
-- Filtering by cause of fire was not implemented due to data limits, but we plan to add it to the map tooltip.  
-- Financial loss display in Millions of USD or per Acre was not possible due to data constraints.  
-- The total area burned summary card was replaced with total financial loss due to data limitations.    
+- Tooltip summary of hovering on map to include counts based on damage level was not included. Calculating the count was too complex and impacting the performance of the visualization. This was due to data inconsistencies and limitations in Plotly's customization.     
 
 -----------------------------------------------------------
 ## **Deviations from Proposal**
@@ -30,8 +28,7 @@
 - A "Learn More" button was added for additional context.  
 - The Total Economic Loss summary card was repositioned for better visibility.  
 - A loading animation was added to improve user experience.  
-- The year slider in the filters section is now more flexible. 
-- The geospatial heatmap displays total fire count per county instead of financial loss.  
+- The year slider in the filters section now snaps to specific years.  
 
 
 -----------------------------------------------------------
