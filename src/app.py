@@ -1,8 +1,5 @@
 from dash import Dash, html
 import dash_bootstrap_components as dbc
-import sys
-import os
-
 from . import callbacks
 from .components import title, global_widgets, cali_map, summary_card, damage_level, timeseries_chart, structure_count, roof_chart, info_section, reference_info, hover_info
 
