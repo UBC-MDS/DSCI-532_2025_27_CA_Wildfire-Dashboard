@@ -29,7 +29,7 @@ def make_structure_chart(calfire_df):
 
     structure_chart = alt.Chart(calfire_structure).mark_bar().encode(
         y=alt.Y("County:N",
-                title="County",
+                title=None,
                 sort=top_10
                 ), 
                 x=alt.X("Count", title="Number of Structures Damaged"),
@@ -49,7 +49,7 @@ def make_structure_chart(calfire_df):
                                 ),
                 tooltip=["Structure Category", "Count"]
                 ).properties(
-        width=400,
+        width='container',
         height=200
     ).interactive()
     

@@ -33,7 +33,7 @@ def make_damage_chart(calfire_df):
                                     )
                                     ),
     tooltip=["Damage", "Count"]).properties(
-        width=400,
+        width='container',
         height=200
     ).interactive()
 
