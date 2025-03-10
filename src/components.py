@@ -107,7 +107,7 @@ cali_map = dbc.Row(
                                         "fontSize": main_font_size,
                                         'background-color': theme_color,
                                         'color':main_font_color}),
-                    dcc.Loading(id="loading-cali-map", children=[dcc.Graph(id="fire_damage_map")])],
+                    dcc.Graph(id="fire_damage_map")],
                 style={'border':'none'}))
 
 # total lost value 

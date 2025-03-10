@@ -36,7 +36,7 @@ def make_time_series_chart(calfire_df, selected_counties=None):
         ),
         y=alt.Y(
     "Total Economic Loss (Billions of USD):Q",
-    title="Total Economic Loss ($ Billions of USD)",  
+    title=None,  
     scale=alt.Scale(zero=False),
     axis=alt.Axis(format=",.0f")  
         ),
@@ -52,7 +52,7 @@ def make_time_series_chart(calfire_df, selected_counties=None):
         opacity=opacity_rule,
         tooltip=["Year:O", "County", alt.Tooltip("Total Economic Loss (Billions of USD):Q", title="Total Economic Loss (Billions of USD)", format="$,.2f")]
     ).properties(
-        width=400,
+        width='container',
         height=200
     ).add_selection(zoom)
     if not selected_counties:
