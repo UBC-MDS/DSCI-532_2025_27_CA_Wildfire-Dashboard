@@ -37,7 +37,7 @@ def plot_map(county_data, selectedData=None):
         projection="mercator",
         hover_name="CountyName", 
         color_continuous_scale="Reds",
-        hover_data={"CountyName": False, "Fire_Count": True, "Assessed_Value_B": True},
+        hover_data={"CountyName": False, "Assessed_Value_B": True, "Fire_Count": True},
         custom_data=["Assessed_Value_B"]   
     )
     
@@ -48,6 +48,9 @@ def plot_map(county_data, selectedData=None):
         fig.update_traces(selectedpoints=selected_indices)
 
     fig.update_geos(fitbounds="locations", visible=False)
+
+     # Remove index from tooltip
+    fig.update_traces(hovertemplate="<b>%{hovertext}</b><br>Economic Loss: %{customdata[0]}<br>Number of Fires: %{z}<extra></extra>")
 
     return fig
 
