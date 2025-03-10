@@ -40,7 +40,7 @@ conda env create --file environment.yaml
 You can run the dash app by running:
 ```bash
 conda activate 532-27
-python src/app.py
+python -m src.app
 ```
 The dashboard will be accessible at **`http://127.0.0.1:5000/`** in your browser.  
 
