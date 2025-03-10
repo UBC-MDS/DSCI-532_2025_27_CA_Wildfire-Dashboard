@@ -3,12 +3,8 @@ import dash_bootstrap_components as dbc
 import sys
 import os
 
-# Enables importing from src
-parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(parent_dir)
-
-from src import callbacks
-from src.components import title, global_widgets, cali_map, summary_card, damage_level, timeseries_chart, structure_count, roof_chart, info_section, reference_info, hover_info
+from . import callbacks
+from .components import title, global_widgets, cali_map, summary_card, damage_level, timeseries_chart, structure_count, roof_chart, info_section, reference_info, hover_info
 
 # Initiatlize the app
 app = Dash(__name__, 
