@@ -143,7 +143,7 @@ summary_card = dbc.Row([
 hover_info = dbc.Row(
                     [
                         html.P(
-                            "* Hover to view county summary; click to filter.",
+                            "*Hover for details, click to filter, hold Shift + click to select multiple*",
                             style={"text-align": "center",
                                    "font-size": "16px",
                                    "position": "absolute",
