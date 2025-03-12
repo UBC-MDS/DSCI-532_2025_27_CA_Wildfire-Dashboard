@@ -72,7 +72,7 @@ info_section = dbc.Row(
 # Global filters
 global_widgets = dbc.Col(
             [
-    html.H4('Filters',
+    html.H4('Global Controls',
             style={"textAlign":"center"}),
     dcc.Markdown("**County**",
                  style={"textAlign":"center"}),
