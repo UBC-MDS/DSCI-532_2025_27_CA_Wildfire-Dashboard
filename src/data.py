@@ -1,8 +1,11 @@
 import pandas as pd
 import geopandas as gpd
+import pickle
 
 # Load wildfire data
-calfire_df = pd.read_csv("data/processed/processed_cal_fire.csv", parse_dates=["Incident Start Date"])
+# calfire_df = pd.read_csv("data/processed/processed_cal_fire.csv", parse_dates=["Incident Start Date"])
+with open('data/processed/processed_cal_fire.pkl', 'rb') as f:
+    calfire_df = pickle.load(f)
 
 calfire_df["Incident Start Date"] = pd.to_datetime(calfire_df["Incident Start Date"], format="ISO8601") # check if needed
 

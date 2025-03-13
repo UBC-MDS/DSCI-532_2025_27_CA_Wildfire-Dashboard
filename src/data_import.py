@@ -57,6 +57,9 @@ def load_calfire_df():
     # Save processed dataframe into data folder
     calfire_df.to_csv('data/processed/processed_cal_fire.csv', index=False)
 
+    # Saving df to serialized pickle file for faster reading
+    with open('data/processed/processed_cal_fire.pkl', 'wb') as f:
+        pickle.dump(calfire_df, f)
 
     # Global variables are created here (Should be updated whenever dataset is updated)
     counties = sorted(calfire_df["County"].dropna().unique())
