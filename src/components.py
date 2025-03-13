@@ -152,7 +152,12 @@ global_widgets = dbc.Col(
                     marks={year: str(year) for year in range(min_year, max_year+1, 2)},
                     updatemode='mouseup'), # Using mouseup instead of drag to reduce update calls and improve performance
     html.Br(),
-    dbc.Button('Submit', id='submit'),
+    dbc.Row(
+        [dbc.Col(
+            dbc.Button('Submit', id='submit')),
+        dbc.Col(
+            dbc.Button('Reset All Filters', id='reset'))]
+            ),
                 ], 
             style={"background-color":"lightgrey",
                     "margin-left": "10px"},
