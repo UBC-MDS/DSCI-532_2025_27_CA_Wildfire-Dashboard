@@ -1,6 +1,7 @@
 import dash_bootstrap_components as dbc
 import dash_vega_components as dvc
 from dash import Dash, dcc, html
+import pickle
 
 from .roof_chart import make_roof_chart
 from .damage_chart import make_damage_chart
@@ -10,13 +11,14 @@ from .timeseries_chart import make_time_series_chart
 
 from .data import calfire_df
 
-# Declre global variables
-counties = sorted(calfire_df["County"].dropna().unique())
-min_year = calfire_df['Incident Start Date'].min().year
-max_year = calfire_df['Incident Start Date'].max().year
+# Declare global variables
 theme_color = "#e88b10"
 main_font_size = "18px"
 main_font_color= "white"
+
+# Getting the global variables:
+with open('data/processed/global_vars.pkl', 'rb') as f:
+    counties, min_year, max_year, incidents = pickle.load(f)
 
 # Components
 # Top matter
@@ -82,9 +84,9 @@ global_widgets = dbc.Col(
 
     html.Br(),
     html.Br(),
-    html.Label("Incident Number",
+    html.Label("Incident Name",
                  style={'display': 'block','textAlign': 'center', 'fontWeight': 'bold'}),
-    dcc.Dropdown(id="incident_number", options=sorted(calfire_df["Incident Number"].dropna().unique()), value = 'id', multi= True),
+    dcc.Dropdown(id="incident_name", options=incidents, value = 'id', multi= True),
 
     html.Br(),
     html.Br(),
@@ -171,7 +173,7 @@ damage_level=dbc.Col([
 # time series of cost of incidents
 timeseries_chart = dbc.Col([
                     dbc.Card(
-                        [dbc.CardHeader("Top 10 Counties with Maximum Economic Loss Over Time",
+                        [dbc.CardHeader("Counties with the highest Economic Loss over time",
                                 style={"textAlign": "center",
                                        "fontWeight": "bold",
                                        "background-color": theme_color,
@@ -187,7 +189,7 @@ timeseries_chart = dbc.Col([
 # bar chart of damage by stucture category and county
 structure_count=dbc.Col([
                     dbc.Card(
-                        [dbc.CardHeader("Top 10 Counties with Most Structures Damaged",
+                        [dbc.CardHeader("Counties with the most Damaged Structures by Category",
                                 style={"textAlign": "center",
                                        "fontWeight": "bold",
                                        "background-color": theme_color,
