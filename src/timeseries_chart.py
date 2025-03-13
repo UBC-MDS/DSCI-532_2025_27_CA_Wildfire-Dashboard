@@ -67,7 +67,6 @@ def make_time_series_chart(calfire_df, selected_counties=None):
         selection = None
         opacity_rule = alt.value(1)
     color_scale = alt.Scale(scheme="category20")
-    zoom = alt.selection_interval(bind="scales")
     timeseries_chart = alt.Chart(filtered_df).mark_line(point=True).encode(
         x=alt.X(
             "Year:O",
@@ -94,7 +93,7 @@ def make_time_series_chart(calfire_df, selected_counties=None):
     ).properties(
         width='container',
         height=200
-    ).add_selection(zoom)
+    )
     if not selected_counties:
         timeseries_chart = timeseries_chart.add_selection(selection)
     return timeseries_chart

@@ -36,20 +36,8 @@ def make_structure_chart(calfire_df):
     >>> chart = make_structure_chart(df)
     >>> chart.show()
     """
-    calfire_structure = calfire_df.copy()
-    calfire_structure = calfire_structure.groupby(['County', 'Structure Category'])['Structure Category'].count().reset_index(name="Count")
 
-    structure_rename = {
-    "Single Residence": "A",
-    "Multiple Residence": "B",
-    "Mixed Commercial/Residential": "C",
-    "Nonresidential Commercial": "D",
-    "Infrastructure": "E",
-    "Agriculture": "F",
-    "Other Minor Structure": "G"
-    }
-
-    calfire_structure["Structure_Renamed"] = calfire_structure["Structure Category"].map(structure_rename)
+    calfire_structure = calfire_df.groupby(['County', 'Structure_Renamed'])['Structure_Renamed'].count().reset_index(name="Count")
 
     top_10 = (calfire_structure
           .groupby(['County'])['Count'].sum()
@@ -81,10 +69,10 @@ def make_structure_chart(calfire_df):
                                                 "'G': 'Other Minor Structure'}[datum.label]"
                                                 )
                                 ),
-                tooltip=["Structure Category", "Count"]
+                tooltip=["Structure_Renamed", "Count"]
                 ).properties(
         width='container',
         height=200
-    ).interactive()
+    )
     
     return structure_chart

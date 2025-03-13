@@ -94,12 +94,12 @@ from .components import main_font_size, main_font_color, theme_color
      Output('fire_damage_map', 'selectedData')],
     [Input('county', 'value'),
     Input('year', 'value'),
-    Input('incident_number', 'value'),
+    Input('incident_name', 'value'),
     Input('fire_damage_map', 'selectedData')
     ]
 )
 
-def update_charts(county, year, incident_number, selectedData):
+def update_charts(county, year, incident_name, selectedData):
 
     filtered_df = calfire_df[(calfire_df["Incident Start Date"].dt.year.between(year[0], year[1]))]
 
@@ -110,8 +110,8 @@ def update_charts(county, year, incident_number, selectedData):
     if county:
         filtered_df = filtered_df[filtered_df['County'].isin(list(county))]
     
-    if incident_number:
-        filtered_df = filtered_df[filtered_df['Incident Number'].isin(list(incident_number))]
+    if incident_name:
+        filtered_df = filtered_df[filtered_df['Incident Name'].isin(list(incident_name))]
          
     roof_chart = make_roof_chart(filtered_df)
     damage_chart = make_damage_chart(filtered_df)
