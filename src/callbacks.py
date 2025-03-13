@@ -92,14 +92,16 @@ from .components import main_font_size, main_font_color, theme_color
      Output('fire_damage_map', 'figure'),
      Output('county', 'value'),
      Output('fire_damage_map', 'selectedData')],
-    [Input('county', 'value'),
-    Input('year', 'value'),
-    Input('incident_name', 'value'),
-    Input('fire_damage_map', 'selectedData')
-    ]
+    [Input('submit', 'n_clicks'),
+     State('county', 'value'),
+     State('year', 'value'),
+     State('incident_name', 'value'),
+     State('fire_damage_map', 'selectedData'),
+    ],
+    prevent_initial_call=True
 )
 
-def update_charts(county, year, incident_name, selectedData):
+def update_charts(n_clicks, county, year, incident_name, selectedData):
 
     filtered_df = calfire_df[(calfire_df["Incident Start Date"].dt.year.between(year[0], year[1]))]
 

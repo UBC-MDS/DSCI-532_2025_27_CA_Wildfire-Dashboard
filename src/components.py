@@ -59,6 +59,7 @@ from .damage_chart import make_damage_chart
 from .structure_chart import make_structure_chart
 from .summary_chart import make_summary_chart
 from .timeseries_chart import make_time_series_chart
+from .create_map import make_fire_damage_map
 
 from .data import calfire_df
 
@@ -149,7 +150,9 @@ global_widgets = dbc.Col(
                     step=1,
                     value=[min_year, max_year],
                     marks={year: str(year) for year in range(min_year, max_year+1, 2)},
-                    updatemode='mouseup') # Using mouseup instead of drag to reduce update calls and improve performance
+                    updatemode='mouseup'), # Using mouseup instead of drag to reduce update calls and improve performance
+    html.Br(),
+    dbc.Button('Submit', id='submit'),
                 ], 
             style={"background-color":"lightgrey",
                     "margin-left": "10px"},
@@ -165,7 +168,8 @@ cali_map = dbc.Row(
                                         "fontSize": main_font_size,
                                         'background-color': theme_color,
                                         'color':main_font_color}),
-                    dcc.Graph(id="fire_damage_map")],
+                    dcc.Graph(id="fire_damage_map",
+                              figure=make_fire_damage_map(calfire_df, None))],
                 style={'border':'none'}))
 
 # total lost value 
