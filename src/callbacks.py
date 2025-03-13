@@ -163,19 +163,6 @@ def update_charts(n_clicks_s, n_clicks_r, county, year, incident_name, selectedD
         
     )
 
-# @callback(
-#     [
-#         Output('county', 'value'),
-#         Output('year', 'value'),
-#         Output('incident_name', 'value')
-#     ],
-#     Input('reset', 'n_clicks'),
-#     prevent_initial_call=True
-# )
-# def clear_filters(n_clicks):
-#     print("reset2")
-#     return (None, None, None)
-
 @callback(
     Output("info", "is_open"),
     [Input("info-button", "n_clicks")],
