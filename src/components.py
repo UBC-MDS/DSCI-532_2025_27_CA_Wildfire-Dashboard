@@ -1,3 +1,54 @@
+"""
+California Wildfire Dashboard Components
+
+This module defines the layout components for the California Wildfire Dashboard using Dash and Dash Bootstrap Components. 
+It includes global filters, interactive charts, and an information section to provide insights into wildfire incidents in California.
+
+Global Variables
+----------------
+counties : list
+    A sorted list of unique counties from the wildfire dataset.
+min_year : int
+    The earliest year in the wildfire dataset.
+max_year : int
+    The latest year in the wildfire dataset.
+theme_color : str
+    Primary theme color for dashboard styling.
+main_font_size : str
+    Default font size for text elements.
+main_font_color : str
+    Primary text color for labels and headings.
+
+Components
+----------
+- **Global Filters**: Dropdowns and sliders for filtering wildfire data by county, year, and incident number.
+- **Dashboard Charts**:
+    - Map of wildfire damage by county.
+    - Summary of total economic loss.
+    - Damage category distribution.
+    - Top 10 counties with maximum loss over time.
+    - Structural damage by county.
+    - Damage by roof type.
+- **Info Section**: A collapsible section providing an overview of dashboard functionality.
+- **Footer**: Contains contributor names, GitHub repository link, and last updated date.
+
+Dependencies
+------------
+- dash
+- dash_bootstrap_components
+- dash_vega_components
+- pandas
+
+References
+----------
+GitHub Repository: https://github.com/UBC-MDS/DSCI-532_2025_27_CA_Wildfire-Dashboard
+
+Last updated: March 5th, 2025
+"""
+
+
+
+
 import dash_bootstrap_components as dbc
 import dash_vega_components as dvc
 from dash import Dash, dcc, html

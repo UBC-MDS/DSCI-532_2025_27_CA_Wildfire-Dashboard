@@ -1,3 +1,74 @@
+"""
+Dash Callbacks for Wildfire Data Visualization
+
+This module contains server-side callbacks for updating various charts and 
+visualizations in the California wildfire dashboard.
+
+Functions
+---------
+update_charts(county, year, incident_number, selectedData)
+    Filters the wildfire dataset based on user input and updates visualizations 
+    such as roof type distribution, damage severity, structure counts, 
+    economic loss summary, time series trends, and the interactive map.
+    
+toggle_button(n, is_open)
+    Controls the visibility of the information modal when the info button is clicked.
+
+Callbacks
+---------
+- Updates:
+    - `roof_chart` (Vega visualization)
+    - `damage_chart` (Vega visualization)
+    - `structure_chart` (Vega visualization)
+    - `summary_card` (Economic loss information)
+    - `timeseries_chart` (Vega visualization)
+    - `fire_damage_map` (Plotly map)
+    - `county` (User-selected counties)
+    - `fire_damage_map.selectedData` (Selection state reset)
+
+Parameters
+----------
+county : list or None
+    The selected counties for filtering the wildfire dataset.
+year : list
+    The range of years for filtering the dataset.
+incident_number : list or None
+    The selected incident numbers for filtering specific wildfire events.
+selectedData : dict or None
+    The selected data points from the map visualization.
+
+Returns
+-------
+tuple
+    A tuple containing updated versions of:
+    - `roof_chart` (dict): Vega visualization of roof types.
+    - `damage_chart` (dict): Vega visualization of damage severity.
+    - `structure_chart` (dict): Vega visualization of affected structures.
+    - `summary_card_update` (list): Dash component for displaying total economic loss.
+    - `timeseries_chart` (dict): Vega visualization of time-series wildfire trends.
+    - `fire_damage_map` (dict): Updated wildfire impact map.
+    - `county` (list or None): Updated county selection.
+    - `selectedData` (None): Reset selected data points.
+
+Usage
+-----
+This script is part of a Dash app and should be run within a Dash context.
+
+Example:
+    >>> from callbacks import update_charts, toggle_button
+    >>> update_charts(["Los Angeles"], [2015, 2020], None, None)
+
+Author
+------
+[Your Name]
+
+Date
+----
+[YYYY-MM-DD]
+"""
+
+
+
 from dash import Output, Input, callback, State, html
 import dash_bootstrap_components as dbc
 import pandas as pd

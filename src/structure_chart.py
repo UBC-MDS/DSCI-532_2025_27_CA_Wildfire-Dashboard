@@ -2,6 +2,40 @@ import pandas as pd
 import altair as alt
 
 def make_structure_chart(calfire_df):
+    """
+    Creates a bar chart showing the number of damaged structures by county,
+    categorized by structure type.
+
+    Parameters
+    ----------
+    calfire_df : pd.DataFrame
+        A DataFrame containing wildfire damage data with at least the following columns:
+        - "County": The county where the wildfire occurred.
+        - "Structure Category": The type of structure affected.
+
+    Returns
+    -------
+    alt.Chart
+        An Altair bar chart displaying the number of damaged structures for 
+        the top 10 counties most affected, categorized by structure type.
+
+    Notes
+    -----
+    - Groups data by County and Structure Category to calculate structure counts.
+    - Renames structure categories using single-letter codes to work around Altair sorting issues.
+    - Filters to display only the top 10 counties with the most damaged structures.
+    - Uses a color scheme to differentiate structure categories.
+    - Enables interactive tooltips for better user insights.
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> data = {"County": ["Los Angeles", "San Diego", "Los Angeles", "Orange"],
+    ...         "Structure Category": ["Single Residence", "Infrastructure", "Agriculture", "Nonresidential Commercial"]}
+    >>> df = pd.DataFrame(data)
+    >>> chart = make_structure_chart(df)
+    >>> chart.show()
+    """
     calfire_structure = calfire_df.copy()
     calfire_structure = calfire_structure.groupby(['County', 'Structure Category'])['Structure Category'].count().reset_index(name="Count")
 

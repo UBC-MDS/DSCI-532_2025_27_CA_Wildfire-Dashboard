@@ -2,6 +2,22 @@ import pandas as pd
 import altair as alt
 
 def make_damage_chart(calfire_df):
+    """
+    Generates a donut chart displaying the distribution of damage categories in the given dataset.
+
+    Parameters
+    ----------
+    calfire_df : pd.DataFrame
+        A DataFrame containing wildfire damage data with a column named 'Damage'.
+
+    Returns
+    -------
+    alt.Chart
+        An Altair donut chart visualizing the count of each damage category.
+    Examples
+    -------
+    >>> make_damage_chart(calfire_df)
+    """
     calfire_damage = calfire_df.copy()
     calfire_damage = calfire_damage[calfire_damage['Damage'] != 'Unknown']
     calfire_damage = calfire_damage.groupby(['Damage'])['Damage'].count().reset_index(name="Count")

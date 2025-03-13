@@ -1,23 +1,47 @@
+"""
+Wildfire Damage Choropleth Map
 
-# Description: This script creates a choropleth map of California counties with wildfire damage data.
-#
-# The make_fire_damage_map function takes in a filtered dataframe and selectedData as input and returns a choropleth map of California counties with wildfire damage data.
-# The function first aggregates the fire damage count per county using the groupby method.
-# It then merges the aggregated data with the county boundaries data to create a GeoDataFrame.
-# The plot_map function is called to create the choropleth map using the GeoDataFrame and selectedData.
-# The function returns the choropleth map.
-#
-# The plot_map function takes in county_data and selectedData as input and returns a choropleth map of California counties with wildfire damage data.
-# The function uses the plotly express choropleth method to create the map.
-# It sets the color scale, hover data, and custom data for the map.
-# The function updates the layout of the map to enable clickmode and select mode.
-# If selectedData is provided, the function updates the selected points on the map.
-# The function returns the choropleth map.
+This script generates a choropleth map of California counties using wildfire damage data. 
+
+Functions
+---------
+- plot_map(county_data, selectedData=None):
+    Creates a choropleth map visualizing the number of wildfires and economic loss by county.
+    
+- make_fire_damage_map(filtered_df, selectedData):
+    Aggregates wildfire data by county and merges it with geographic boundaries before calling `plot_map()`.
+
+Dependencies
+------------
+- plotly.express
+- pandas
+- geopandas
+
+"""
 
 import plotly.express as px
 from .data import county_boundaries
-    
+
 def plot_map(county_data, selectedData=None):
+    """
+    Generates a choropleth map of California counties with wildfire damage data.
+
+    Parameters
+    ----------
+    county_data : pandas.DataFrame
+        A DataFrame containing county wildfire statistics and geographic boundaries.
+    selectedData : dict, optional
+        Data from a previous selection event, used to highlight selected counties (default is None).
+
+    Returns
+    -------
+    plotly.graph_objects.Figure
+        A choropleth map displaying wildfire damage across California counties.
+        
+    Examples
+    --------
+    >>> plot_map(county_fire_data)
+    """
     county_data = county_data.reset_index(drop=True)
     
     fig = px.choropleth(
@@ -41,13 +65,32 @@ def plot_map(county_data, selectedData=None):
 
     fig.update_geos(fitbounds="locations", visible=False)
 
-     # Remove index from tooltip
+    # Remove index from tooltip
     fig.update_traces(hovertemplate="<b>%{hovertext}</b><br>Economic Loss: %{customdata[0]}<br>Number of Fires: %{z}<extra></extra>")
 
     return fig
 
 
 def make_fire_damage_map(filtered_df, selectedData):
+    """
+    Prepares data for the choropleth map by aggregating wildfire statistics and merging with county boundaries.
+
+    Parameters
+    ----------
+    filtered_df : pandas.DataFrame
+        A DataFrame containing wildfire incidents with columns "County", "Damage", and "Assessed Improved Value".
+    selectedData : dict
+        Selection data from the map for interactive filtering.
+
+    Returns
+    -------
+    plotly.graph_objects.Figure
+        A choropleth map displaying wildfire damage across California counties.
+
+    Examples
+    --------
+    >>> make_fire_damage_map(filtered_df)
+    """
     
     # Aggregate fire damage count per county
     fire_count = filtered_df.groupby("County").agg(
