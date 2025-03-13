@@ -2,7 +2,32 @@ import pandas as pd
 import altair as alt
 
 def make_roof_chart(calfire_df):
-    
+    """
+    Creates a bar chart showing the number of houses by roof construction type,
+    categorized by wildfire damage severity.
+
+    Parameters
+    ----------
+    calfire_df : pd.DataFrame
+        A DataFrame containing wildfire damage data with at least the following columns:
+        - "Roof Construction": Type of roof construction.
+        - "Damage": Damage severity category.
+
+    Returns
+    -------
+    alt.Chart
+        An Altair bar chart displaying the count of houses for each roof construction type,
+        colored by damage severity.
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> data = {"Roof Construction": ["Tile", "Shingle", "Tile", "Metal"],
+    ...         "Damage": ["No Damage", "Minor (10-25%)", "Destroyed (>50%)", "Major (26-50%)"]}
+    >>> df = pd.DataFrame(data)
+    >>> chart = make_roof_chart(df)
+    >>> chart.show()
+    """
     alt.data_transformers.enable("vegafusion")
 
     # Compute total count per Roof Construction for sorting

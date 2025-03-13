@@ -2,13 +2,37 @@ import pandas as pd
 import pickle
 
 def load_calfire_df():
-    '''
-    Imports the CAL FIRE Damage Inspection (DINS) Data CSV from data folder and converts it to a Pandas DataFrame and saves it in data folder. Also applies some simple data cleaning.
+    """
+    Loads the CAL FIRE Damage Inspection (DINS) Data from a CSV file, performs data cleaning, 
+    and saves the cleaned dataset as a new CSV file.
 
-    Usage:
-    from data_import import load_calfire_df
-    load_calfire_df()
-    '''    
+    The function selects relevant columns, renames them for consistency, 
+    and applies minor data cleaning such as handling missing values and reclassifying 
+    "Inaccessible" damage as "Unknown".
+
+    The cleaned dataset is saved to 'data/processed/cleaned_cal_fire.csv'.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    None
+
+    Notes
+    -----
+    - Reads the raw dataset from 'data/raw/California_wildfire_2013-2025.csv'.
+    - Handles missing values in the "Assessed Improved Value", "County", and "Roof Construction" columns.
+    - Renames some columns for better readability.
+    - Saves the cleaned DataFrame as a CSV file.
+    
+    Examples
+    --------
+    >>> from data_import import load_calfire_df
+    >>> load_calfire_df()
+    (This will load, clean, and save the data without returning anything.)
+    """
 
     relevant_columns = ["* Damage", "County", "* Incident Name", "Incident Start Date", "Structure Category", "* Roof Construction", "Assessed Improved Value (parcel)"]
     renamed_columns = ["Damage", "County", "Incident Name", "Incident Start Date", "Structure Category", "Roof Construction", "Assessed Improved Value"]
