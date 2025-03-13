@@ -74,19 +74,24 @@ info_section = dbc.Row(
 # Global filters
 global_widgets = dbc.Col(
             [
-    html.H4('Filters',
-            style={"textAlign":"center"}),
-    dcc.Markdown("**County**",
-                 style={"textAlign":"center"}),
+                
+    html.Br(),
+    html.Label("County", 
+               style={'display': 'block','textAlign': 'center', 'fontWeight': 'bold'}),        
     dcc.Dropdown(id='county',
                  options = counties,
                  multi = True),
 
-    dcc.Markdown("**Incident Name**",
-                 style={"textAlign":"center"}),
+    html.Br(),
+    html.Br(),
+    html.Label("Incident Name",
+                 style={'display': 'block','textAlign': 'center', 'fontWeight': 'bold'}),
     dcc.Dropdown(id="incident_name", options=incidents, value = 'id', multi= True),
-    dcc.Markdown("**Year**",
-                 style={"textAlign":"center"}),
+
+    html.Br(),
+    html.Br(),
+    html.Label("Year",
+                 style={'display': 'block','textAlign': 'center', 'fontWeight': 'bold'}),
     dcc.RangeSlider(id='year',
                     min=min_year,
                     max=max_year,
@@ -138,7 +143,7 @@ summary_card = dbc.Row([
 hover_info = dbc.Row(
                     [
                         html.P(
-                            "* Hover to view county summary; click to filter.",
+                            "*Hover for details, click to filter, hold Shift + click to select multiple*",
                             style={"text-align": "center",
                                    "font-size": "16px",
                                    "position": "absolute",
