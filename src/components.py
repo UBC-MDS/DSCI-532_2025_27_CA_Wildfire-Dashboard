@@ -228,7 +228,8 @@ damage_level=dbc.Col([
                       spec=make_damage_chart(calfire_df).to_dict(format="vega"))]),
                                      style={"height": "280px"})],
                         id="damage_card"
-            )])
+            )],
+            md=6)
 
 # time series of cost of incidents
 timeseries_chart = dbc.Col([
@@ -243,7 +244,8 @@ timeseries_chart = dbc.Col([
                             dvc.Vega(id='timeseries_chart', spec=make_time_series_chart(calfire_df).to_dict(format="vega"))
                         ]),
                              style={"height": "280px"})]
-                )])
+                )],
+                md=6)
 
 
 # bar chart of damage by stucture category and county
@@ -260,7 +262,8 @@ structure_count=dbc.Col([
                          spec=make_structure_chart(calfire_df).to_dict(format="vega"))
                          ]),
                                     style={"height": "280px"})
-                        ])])
+                        ])],
+                        md=6)
 
 
 
