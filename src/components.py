@@ -103,23 +103,31 @@ app_info = [
     html.Div(
         "Welcome to the California Wildfire Dashboard! A one-stop shop for gleaning insights from California Wildfires data.",
         style={'font-size': '16px',
-            'max-width': '1500px'}
+            'max-width': '1200px'}
     ),
     html.Div(
-        "Here you can explore the impact of wildfires across different counties in California for the past decade!",
+        "Here you can explore the impact of wildfires across different counties in California for the past decade.",
         style={'font-size': '16px',
-            'max-width': '1500px'}
+            'max-width': '1200px'}
     ),
     html.Div(
-        "On the left, you can filter by specific or multiple counties and select a year range of interest. If you are curious about a specific fire, you can also filter by the name of the fire as well.",
+        "On the left, you can filter by specific or multiple counties and select a year range of interest.",
         style={'font-size': '16px',
-            'max-width': '1500px'}
+            'max-width': '1200px'}
     ),
+    html.Div(["If you are curious about a specific fire, you can also filter by ",
+        html.A("incident name",
+               href="https://www.fire.ca.gov/incidents/2025",
+               style={"color": "darkblue"}),
+         " as well.",
+        ],
+             style={'font-size': '16px',
+            'max-width': '1200px'}),
     html.Div("On the right, you'll find a map of California. Hovering over a county will display a wildfire damage summary, selecting counties on the map will also filter for them.",
              style={'font-size': '16px',
-            'max-width': '1500px'}),
+            'max-width': '1200px'}),
     html.Div("Below the map, explore in detail the financial impact of wildfires on different counties, the extent of building damage, and the types of building materials affected.", style={'font-size': '16px',
-            'max-width': '1500px'})   
+            'max-width': '1200px'})   
 ]
 
 info_section = dbc.Row(
@@ -223,8 +231,13 @@ hover_info = dbc.Row(
                         html.P(
                             ["*Hover for details. Click county to select, hold ",
                               html.Code("Shift",
-                                        style={"border": "1px solid #ccc"}),
-                              " for multiple, click submit to apply filter*"],
+                                        style={"border": "1px solid #ccc",
+                                            #    "background-color": "lightgrey",
+                                               "color": "black",
+                                               "padding": "2px 5px",
+                                               "border-radius": "4px"
+                                               }),
+                              " to select multiple, click submit to apply filter*"],
                             style={"text-align": "center",
                                    "font-size": "16px",
                                    "position": "absolute",
