@@ -37,7 +37,7 @@ def make_structure_chart(calfire_df):
     >>> chart.show()
     """
 
-    calfire_structure = calfire_df.groupby(['County', 'Structure_Renamed'])['Structure_Renamed'].count().reset_index(name="Count")
+    calfire_structure = calfire_df.groupby(['County', 'Structure_Category'])['Structure_Category'].count().reset_index(name="Count")
 
     top_10 = (calfire_structure
           .groupby(['County'])['Count'].sum()
@@ -55,21 +55,21 @@ def make_structure_chart(calfire_df):
                 sort=top_10
                 ), 
                 x=alt.X("Count", title="Number of Structures Damaged"),
-                color=alt.Color("Structure_Renamed:N",
+                color=alt.Color("Structure_Category:N",
                                 title="Structure Category",
                                 scale=alt.Scale(scheme="paired"),
                                 legend=alt.Legend(
                                     title="Structure Category",
-                                    labelExpr="{'A':'Single Residence', "
-                                                "'B': 'Multiple Residence', "
-                                                "'C': 'Mixed Commercial/Residential', "
-                                                "'D': 'Nonresidential Commercial', "
-                                                "'E': 'Infrastructure', "
-                                                "'F': 'Agriculture', "
-                                                "'G': 'Other Minor Structure'}[datum.label]"
+                                    labelExpr="{'A. Single Residence':'Single Residence', "
+                                                "'B. Multiple Residence': 'Multiple Residence', "
+                                                "'C. Mixed Commercial/Residential': 'Mixed Commercial/Residential', "
+                                                "'D. Nonresidential Commercial': 'Nonresidential Commercial', "
+                                                "'E. Infrastructure': 'Infrastructure', "
+                                                "'F. Agriculture': 'Agriculture', "
+                                                "'G. Other Minor Structure': 'Other Minor Structure'}[datum.label]"
                                                 )
                                 ),
-                tooltip=["Structure_Renamed", "Count"]
+                tooltip=["Structure_Category", "Count"]
                 ).properties(
         width='container',
         height=200

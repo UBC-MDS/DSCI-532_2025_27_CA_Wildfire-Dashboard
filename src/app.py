@@ -76,8 +76,10 @@ app.layout = dbc.Container([
             dbc.Row([
                 structure_count,
                 timeseries_chart],
-            style={"marginTop": "20px"})])
-            ]),
+            style={"marginTop": "20px"})]),
+            ],
+            style={"marginTop": "10px",
+                   "marginRight":"5px"}),
     reference_info],
     fluid=True,
     style={'margin': 0,

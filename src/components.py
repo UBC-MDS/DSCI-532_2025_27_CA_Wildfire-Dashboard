@@ -64,9 +64,9 @@ from .create_map import make_fire_damage_map
 from .data import calfire_df
 
 # Declare global variables
-theme_color = "#e88b10"
+theme_color = "#d1d6de"
 main_font_size = "18px"
-main_font_color= "white"
+main_font_color= "black"
 
 # Getting the global variables:
 with open('data/processed/global_vars.pkl', 'rb') as f:
@@ -101,14 +101,33 @@ title = dbc.Row([
                        'padding': 10})
 app_info = [
     html.Div(
-        "Welcome to the California Wildfire Dashboard! A one-stop shop for gleaning insights from California Wildfires data. Here you can explore the impact of wildfires across different counties in California for the past decade!", style={'font-size': '16px'}
+        "Welcome to the California Wildfire Dashboard! A one-stop shop for gleaning insights from California Wildfires data.",
+        style={'font-size': '16px',
+            'max-width': '1200px'}
     ),
     html.Div(
-        "On the left, you can filter by specific or multiple counties and select a year range of interest. If you know the fire's incident ID, you can filter by that as well.", style={'font-size': '16px'}
+        "Here you can explore the impact of wildfires across different counties in California for the past decade.",
+        style={'font-size': '16px',
+            'max-width': '1200px'}
     ),
+    html.Div(
+        "On the left, you can filter by specific or multiple counties and select a year range of interest.",
+        style={'font-size': '16px',
+            'max-width': '1200px'}
+    ),
+    html.Div(["If you are curious about a specific fire, you can also filter by ",
+        html.A("incident name",
+               href="https://www.fire.ca.gov/incidents/2025",
+               style={"color": "darkblue"}),
+         " as well.",
+        ],
+             style={'font-size': '16px',
+            'max-width': '1200px'}),
     html.Div("On the right, you'll find a map of California. Hovering over a county will display a wildfire damage summary, selecting counties on the map will also filter for them.",
-             style={'font-size': '16px'}),
-    html.Div("Below the map, explore in detail the financial impact of wildfires on different counties, the extent of building damage, and the types of building materials affected.", style={'font-size': '16px'})   
+             style={'font-size': '16px',
+            'max-width': '1200px'}),
+    html.Div("Below the map, explore in detail the financial impact of wildfires on different counties, the extent of building damage, and the types of building materials affected.", style={'font-size': '16px',
+            'max-width': '1200px'})   
 ]
 
 info_section = dbc.Row(
@@ -154,12 +173,15 @@ global_widgets = dbc.Col(
     html.Br(),
     dbc.Row(
         [dbc.Col(
-            dbc.Button('Submit', id='submit')),
+            dbc.Button('Submit', id='submit'),
+            width={'size':3, 'offset': 3}
+            ),
         dbc.Col(
-            dbc.Button('Reset All Filters', id='reset'))]
+            dbc.Button('Reset All Filters', id='reset')
+            )]
             ),
                 ], 
-            style={"background-color":"lightgrey",
+            style={"background-color":theme_color,
                     "margin-left": "10px"},
                 md=3)
  
@@ -174,7 +196,11 @@ cali_map = dbc.Row(
                                         'background-color': theme_color,
                                         'color':main_font_color}),
                     dcc.Graph(id="fire_damage_map",
-                              figure=make_fire_damage_map(calfire_df, None))],
+                              figure=make_fire_damage_map(calfire_df, None),
+                              style={'width': '800px',
+                                    "display": "flex",
+                                    "justify-content": "center",
+                                    "margin": "0 auto"})],
                 style={'border':'none'}))
 
 # total lost value 
@@ -186,9 +212,10 @@ summary_card = dbc.Row([
                                        "background-color": theme_color,
                                         "fontSize": main_font_size,
                                         'color':main_font_color}),
-                dbc.CardBody(f'${make_summary_chart(calfire_df):.2f} Billions USD',
+                dbc.CardBody(f'${make_summary_chart(calfire_df):.2f} Billion USD',
                              style={"textAlign": "center",
                                     "fontSize": "21px"})],
+                                    # style={'border':'none'},
                 id='summary_card'),
                     width={"size": 3, "offset": 0}, 
                     style={"marginTop":"10px",
@@ -203,7 +230,15 @@ summary_card = dbc.Row([
 hover_info = dbc.Row(
                     [
                         html.P(
-                            "*Hover for details, click to filter, hold Shift + click to select multiple*",
+                            ["*Hover for details. Click county to select, hold ",
+                              html.Code("Shift",
+                                        style={"border": "1px solid #ccc",
+                                            #    "background-color": "lightgrey",
+                                               "color": "black",
+                                               "padding": "2px 5px",
+                                               "border-radius": "4px"
+                                               }),
+                              " to select multiple, click submit to apply filter*"],
                             style={"text-align": "center",
                                    "font-size": "16px",
                                    "position": "absolute",
@@ -227,13 +262,15 @@ damage_level=dbc.Col([
                         dbc.CardBody(dcc.Loading(id="loading-damage-chart", children=[dvc.Vega(id='damage_chart', 
                       spec=make_damage_chart(calfire_df).to_dict(format="vega"))]),
                                      style={"height": "280px"})],
+                                     style={'border':'none'},
                         id="damage_card"
-            )])
+            )],
+            md=6)
 
 # time series of cost of incidents
 timeseries_chart = dbc.Col([
                     dbc.Card(
-                        [dbc.CardHeader("Counties with the highest Economic Loss over time",
+                        [dbc.CardHeader("Counties with the Highest Economic Loss Over Time",
                                 style={"textAlign": "center",
                                        "fontWeight": "bold",
                                        "background-color": theme_color,
@@ -242,14 +279,16 @@ timeseries_chart = dbc.Col([
                         dbc.CardBody(dcc.Loading(id="loading-timeseries-chart", children=[
                             dvc.Vega(id='timeseries_chart', spec=make_time_series_chart(calfire_df).to_dict(format="vega"))
                         ]),
-                             style={"height": "280px"})]
-                )])
+                             style={"height": "280px"})],
+                             style={'border':'none'}
+                )],
+                md=6)
 
 
 # bar chart of damage by stucture category and county
 structure_count=dbc.Col([
                     dbc.Card(
-                        [dbc.CardHeader("Counties with the most Damaged Structures by Category",
+                        [dbc.CardHeader("Counties with the Most Damaged Structures by Category",
                                 style={"textAlign": "center",
                                        "fontWeight": "bold",
                                        "background-color": theme_color,
@@ -260,14 +299,16 @@ structure_count=dbc.Col([
                          spec=make_structure_chart(calfire_df).to_dict(format="vega"))
                          ]),
                                     style={"height": "280px"})
-                        ])])
+                        ],
+                        style={'border':'none'})],
+                        md=6)
 
 
 
 # house characteristic vs Damage level
 roof_chart = dbc.Col([
                     dbc.Card(
-                        [dbc.CardHeader("House Damaged by Roof Type",
+                        [dbc.CardHeader("Houses Damaged by Roof Type",
                                         style={"textAlign": "center",
                                                "fontWeight": "bold",
                                                "background-color": theme_color,
@@ -275,6 +316,7 @@ roof_chart = dbc.Col([
                                                'color':main_font_color}),
                         dbc.CardBody(dcc.Loading(id="loading-roof-chart", children=[dvc.Vega(id='roof_chart', spec=make_roof_chart(calfire_df).to_dict(format="vega"))]),
                                      style={"height": "280px"})],
+                                     style={'border':'none'},
                                      id="roof_card"
                                      )],
                     md=6)

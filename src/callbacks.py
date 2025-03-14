@@ -137,7 +137,7 @@ def update_charts(n_clicks_s, n_clicks_r, county, year, incident_name, selectedD
                                 "fontSize": main_font_size,
                               'color':main_font_color}),
         dbc.CardBody(
-            f'${total_cost:.2f} Billions USD' if total_cost else "No Data Available",
+            f'${total_cost:.2f} Billion USD' if total_cost else "No Data Available",
             style={"textAlign": "center", "fontSize": "21px"}
         )
     ]

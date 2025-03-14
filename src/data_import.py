@@ -64,22 +64,22 @@ def load_calfire_df():
 }
 
     ## For correct sorting of structure types.
-    calfire_df["Damage_Renamed"] = calfire_df["Damage"].map(damage_rename)
+    calfire_df["Damage_Category"] = calfire_df["Damage"].map(damage_rename)
 
     structure_rename = {
-    "Single Residence": "A",
-    "Multiple Residence": "B",
-    "Mixed Commercial/Residential": "C",
-    "Nonresidential Commercial": "D",
-    "Infrastructure": "E",
-    "Agriculture": "F",
-    "Other Minor Structure": "G"
+    "Single Residence": "A. Single Residence",
+    "Multiple Residence": "B. Multiple Residence",
+    "Mixed Commercial/Residential": "C. Mixed Commercial/Residential",
+    "Nonresidential Commercial": "D. Nonresidential Commercial",
+    "Infrastructure": "E. Infrastructure",
+    "Agriculture": "F. Agriculture",
+    "Other Minor Structure": "G. Other Minor Structure"
     }
 
-    calfire_df["Structure_Renamed"] = calfire_df["Structure Category"].map(structure_rename)
+    calfire_df["Structure_Category"] = calfire_df["Structure Category"].map(structure_rename)
 
     # Save processed dataframe into data folder
-    calfire_df.to_csv('data/processed/processed_cal_fire.csv', index=False)
+    calfire_df.to_csv('.data/processed/processed_cal_fire.csv', index=False)
 
     # Saving df to serialized pickle file for faster reading
     with open('data/processed/processed_cal_fire.pkl', 'wb') as f:
@@ -92,7 +92,7 @@ def load_calfire_df():
     incidents = sorted(calfire_df["Incident Name"].dropna().unique())
 
     # Saving the global variables:
-    with open('data/processed/global_vars.pkl', 'wb') as f:
+    with open('../data/processed/global_vars.pkl', 'wb') as f:
         pickle.dump([counties, min_year, max_year, incidents], f)
 
 if __name__ == '__main__':

@@ -18,11 +18,11 @@ def make_damage_chart(calfire_df):
     -------
     >>> make_damage_chart(calfire_df)
     """
-    calfire_damage = calfire_df.groupby(['Damage_Renamed'])['Damage_Renamed'].count().reset_index(name="Count")
+    calfire_damage = calfire_df.groupby(['Damage_Category'])['Damage_Category'].count().reset_index(name="Count")
 
     damage_chart = alt.Chart(calfire_damage).mark_arc(innerRadius=50).encode(
     theta="Count",
-    color=alt.Color("Damage_Renamed:N",
+    color=alt.Color("Damage_Category:N",
                     title="Damage Category",
                     scale=alt.Scale(scheme="reds"),
                     legend=alt.Legend(
@@ -34,7 +34,7 @@ def make_damage_chart(calfire_df):
                                     "'E. Destroyed (>50%)': 'Destroyed (>50%)'}[datum.label]"
                                     )
                                     ),
-    tooltip=["Damage_Renamed", "Count"]).properties(
+    tooltip=["Damage_Category", "Count"]).properties(
         width='container',
         height=200
     )
