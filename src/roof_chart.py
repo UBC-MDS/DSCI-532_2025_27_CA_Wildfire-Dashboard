@@ -45,7 +45,7 @@ def make_roof_chart(calfire_df):
                 sort=roof_order  # Sort by total house count (descending)
             ),  
         x=alt.X("count()", title="Number of Houses"),
-        color=alt.Color("Damage_Renamed:N",  # Use renamed categories for sorting
+        color=alt.Color("Damage_Category:N",  # Use renamed categories for sorting
                         title="Damage Category",
                         scale=alt.Scale(scheme="reds"),
                         legend=alt.Legend(
@@ -57,7 +57,7 @@ def make_roof_chart(calfire_df):
                                     "'E. Destroyed (>50%)': 'Destroyed (>50%)'}[datum.label]"  
                         )  # Show original labels in legend
                     ),  
-        tooltip=["Roof Construction", "count()", "Damage_Renamed"]
+        tooltip=["Roof Construction", "count()", "Damage_Category"]
     ).properties(
         width='container',
         height=200
