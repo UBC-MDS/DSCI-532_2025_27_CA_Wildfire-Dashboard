@@ -165,12 +165,15 @@ global_widgets = dbc.Col(
     html.Br(),
     dbc.Row(
         [dbc.Col(
-            dbc.Button('Submit', id='submit')),
+            dbc.Button('Submit', id='submit'),
+            width={'size':3, 'offset': 3}
+            ),
         dbc.Col(
-            dbc.Button('Reset All Filters', id='reset'))]
+            dbc.Button('Reset All Filters', id='reset')
+            )]
             ),
                 ], 
-            style={"background-color":"lightgrey",
+            style={"background-color":theme_color,
                     "margin-left": "10px"},
                 md=3)
  
