@@ -215,6 +215,7 @@ summary_card = dbc.Row([
                 dbc.CardBody(f'${make_summary_chart(calfire_df):.2f} Billion USD',
                              style={"textAlign": "center",
                                     "fontSize": "21px"})],
+                                    # style={'border':'none'},
                 id='summary_card'),
                     width={"size": 3, "offset": 0}, 
                     style={"marginTop":"10px",
@@ -261,6 +262,7 @@ damage_level=dbc.Col([
                         dbc.CardBody(dcc.Loading(id="loading-damage-chart", children=[dvc.Vega(id='damage_chart', 
                       spec=make_damage_chart(calfire_df).to_dict(format="vega"))]),
                                      style={"height": "280px"})],
+                                     style={'border':'none'},
                         id="damage_card"
             )],
             md=6)
@@ -277,7 +279,8 @@ timeseries_chart = dbc.Col([
                         dbc.CardBody(dcc.Loading(id="loading-timeseries-chart", children=[
                             dvc.Vega(id='timeseries_chart', spec=make_time_series_chart(calfire_df).to_dict(format="vega"))
                         ]),
-                             style={"height": "280px"})]
+                             style={"height": "280px"})],
+                             style={'border':'none'}
                 )],
                 md=6)
 
@@ -296,7 +299,8 @@ structure_count=dbc.Col([
                          spec=make_structure_chart(calfire_df).to_dict(format="vega"))
                          ]),
                                     style={"height": "280px"})
-                        ])],
+                        ],
+                        style={'border':'none'})],
                         md=6)
 
 
@@ -312,6 +316,7 @@ roof_chart = dbc.Col([
                                                'color':main_font_color}),
                         dbc.CardBody(dcc.Loading(id="loading-roof-chart", children=[dvc.Vega(id='roof_chart', spec=make_roof_chart(calfire_df).to_dict(format="vega"))]),
                                      style={"height": "280px"})],
+                                     style={'border':'none'},
                                      id="roof_card"
                                      )],
                     md=6)
