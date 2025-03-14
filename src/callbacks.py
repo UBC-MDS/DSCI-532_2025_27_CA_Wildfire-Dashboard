@@ -69,7 +69,7 @@ Date
 
 
 
-from dash import Output, Input, callback, State, html
+from dash import Output, Input, callback, State, html, ctx, no_update
 import dash_bootstrap_components as dbc
 import pandas as pd
 
@@ -80,7 +80,7 @@ from .structure_chart import make_structure_chart
 from .summary_chart import make_summary_chart
 from .timeseries_chart import make_time_series_chart
 from .create_map import make_fire_damage_map
-from .components import main_font_size, main_font_color, theme_color
+from .components import main_font_size, main_font_color, theme_color, min_year, max_year
 
 # Server side callbacks/reactivity
 @callback(
@@ -91,28 +91,39 @@ from .components import main_font_size, main_font_color, theme_color
      Output('timeseries_chart', 'spec'),
      Output('fire_damage_map', 'figure'),
      Output('county', 'value'),
-     Output('fire_damage_map', 'selectedData')],
-    [Input('county', 'value'),
-    Input('year', 'value'),
-    Input('incident_name', 'value'),
-    Input('fire_damage_map', 'selectedData')
-    ]
+     Output('year', 'value'),
+     Output('incident_name', 'value'),
+     Output('fire_damage_map', 'selectedData')
+    ],
+    [Input('submit', 'n_clicks'),
+     Input('reset', 'n_clicks'),
+     State('county', 'value'),
+     State('year', 'value'),
+     State('incident_name', 'value'),
+     State('fire_damage_map', 'selectedData'),
+    ],
+    # prevent_initial_call=True
 )
 
-def update_charts(county, year, incident_name, selectedData):
+def update_charts(n_clicks_s, n_clicks_r, county, year, incident_name, selectedData):
 
-    filtered_df = calfire_df[(calfire_df["Incident Start Date"].dt.year.between(year[0], year[1]))]
+    # Reset filters 
+    if 'reset' == ctx.triggered_id:
+        county, year, incident_name = None, [min_year, max_year], None
+        filtered_df = calfire_df
+    else:
+        filtered_df = calfire_df[(calfire_df["Incident Start Date"].dt.year.between(year[0], year[1]))]
 
-    if selectedData:
-        selected_counties = [point["hovertext"] for point in selectedData["points"]]
-        county = selected_counties
+        if selectedData:
+            selected_counties = [point["hovertext"] for point in selectedData["points"]]
+            county = selected_counties
+            
+        if county:
+            filtered_df = filtered_df[filtered_df['County'].isin(list(county))]
         
-    if county:
-        filtered_df = filtered_df[filtered_df['County'].isin(list(county))]
-    
-    if incident_name:
-        filtered_df = filtered_df[filtered_df['Incident Name'].isin(list(incident_name))]
-         
+        if incident_name:
+            filtered_df = filtered_df[filtered_df['Incident Name'].isin(list(incident_name))]
+
     roof_chart = make_roof_chart(filtered_df)
     damage_chart = make_damage_chart(filtered_df)
     structure_chart = make_structure_chart(filtered_df)
@@ -146,7 +157,10 @@ def update_charts(county, year, incident_name, selectedData):
         timeseries_chart.to_dict(format="vega"),
         fire_damage_map,
         county,
-        selectedData
+        year,
+        incident_name,
+        selectedData,
+        
     )
 
 @callback(
@@ -160,3 +174,5 @@ def toggle_button(n, is_open):
     if n:
         return not is_open
     return is_open
+
+
