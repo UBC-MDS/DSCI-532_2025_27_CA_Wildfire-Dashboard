@@ -120,7 +120,7 @@ def load_calfire_df():
 
     calfire_df["Assessed Improved Value"] = calfire_df["Assessed Improved Value"].astype('int32') # Changed from float64 as we don't need that level of precision for each property
 
-    # calfire_df = calfire_df.iloc[:int(calfire_df.shape[0]/25)] # reduce to 5k rows
+    calfire_df = calfire_df.iloc[:int(calfire_df.shape[0]/100)] # reduce to 5k rows
 
     #Save pandas dataframe as csv
     # calfire_df.to_csv('data/processed/processed_cal_fire.csv', index=False)
