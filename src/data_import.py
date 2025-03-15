@@ -120,7 +120,7 @@ def load_calfire_df():
 
     calfire_df["Assessed Improved Value"] = calfire_df["Assessed Improved Value"].astype('int32') # Changed from float64 as we don't need that level of precision for each property
 
-    calfire_df = calfire_df.iloc[:int(calfire_df.shape[0]/100)] # reduce to 5k rows
+    calfire_df = calfire_df.iloc[:10] # reduce to 5 rows for testing purposes
 
     #Save pandas dataframe as csv
     # calfire_df.to_csv('data/processed/processed_cal_fire.csv', index=False)
@@ -130,7 +130,7 @@ def load_calfire_df():
     #     pickle.dump(calfire_df, f)
 
      # Convert to Dask DataFrame
-    dask_df = dd.from_pandas(calfire_df, npartitions=100) # 100,000 rows / 100 = 1000 rows per partition
+    dask_df = dd.from_pandas(calfire_df, npartitions=1) # 100,000 rows / 100 = 1000 rows per partition
 
     # Save Dask DataFrame to Parquet file
     dask_df.to_parquet('data/processed/processed_cal_fire.parquet')
