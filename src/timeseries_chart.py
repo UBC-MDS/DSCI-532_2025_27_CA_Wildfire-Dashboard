@@ -1,6 +1,6 @@
 import altair as alt
 
-def make_time_series_chart(calfire_df, selected_counties=None):
+def make_time_series_chart(calfire_df):
     """
     Creates an interactive time-series chart showing the total economic loss due to wildfires over the years.
 
@@ -61,16 +61,13 @@ def make_time_series_chart(calfire_df, selected_counties=None):
         .index.tolist()
     )
 
-    if not selected_counties:
-        filtered_df = calfire_df[calfire_df["County"].isin(top_10_counties)]
-        selection = alt.selection_multi(fields=["County"], bind="legend", name="Select")
-        opacity_rule = alt.condition(selection, alt.value(1), alt.value(0.2))
-    else:
-        filtered_df = calfire_df[calfire_df["County"].isin(selected_counties)]
-        selection = None
-        opacity_rule = alt.value(1)
+  
+    calfire_df = calfire_df[calfire_df["County"].isin(top_10_counties)]
+    # selection = alt.selection_multi(fields=["County"], bind="legend", name="Select")
+    # opacity_rule = alt.condition(selection, alt.value(1), alt.value(0.2))
+
     color_scale = alt.Scale(scheme="category20")
-    timeseries_chart = alt.Chart(filtered_df).mark_line(point=True).encode(
+    timeseries_chart = alt.Chart(calfire_df).mark_line(point=True).encode(
         x=alt.X(
             "Year:O",
             title="Year",
@@ -84,20 +81,18 @@ def make_time_series_chart(calfire_df, selected_counties=None):
         ),
         color=alt.Color(
             "County:N",
-            title="Click Legend to Filter" if not selected_counties else "Selected Counties",
+            title="Click Legend to Filter",
             scale=color_scale,
             legend=alt.Legend(
-                title="County" if not selected_counties else "Selected Counties",
+                title="County",
                 orient="right"
             )
         ),
-        opacity=opacity_rule,
         tooltip=["Year:O", "County:N", alt.Tooltip("Total Economic Loss (Billions of USD):Q", title="Total Economic Loss (Billions of USD)", format="$,.2f")]
     ).properties(
         width='container',
         height=200
     )
-    if not selected_counties:
-        timeseries_chart = timeseries_chart.add_selection(selection)
+
     return timeseries_chart
        

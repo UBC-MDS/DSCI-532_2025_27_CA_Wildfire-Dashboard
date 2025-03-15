@@ -130,7 +130,7 @@ def load_calfire_df():
     #     pickle.dump(calfire_df, f)
 
      # Convert to Dask DataFrame
-    dask_df = dd.from_pandas(calfire_df, npartitions=50)
+    dask_df = dd.from_pandas(calfire_df, npartitions=100) # 100,000 rows / 100 = 1000 rows per partition
 
     # Save Dask DataFrame to Parquet file
     dask_df.to_parquet('data/processed/processed_cal_fire.parquet')
