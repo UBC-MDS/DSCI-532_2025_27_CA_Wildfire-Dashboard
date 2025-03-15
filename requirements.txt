@@ -11,5 +11,6 @@ vl-convert-python==1.7.0
 plotly==6.0.*
 vegafusion==1.6.*
 vegafusion-python-embed==1.6.*
-
+# pyarrow==19.0.*
+dask==2025.*
 

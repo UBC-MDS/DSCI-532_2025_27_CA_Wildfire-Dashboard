@@ -1,6 +1,5 @@
 import plotly.express as px
 import geopandas as gpd
-import pandas as pd
 
 def make_fire_damage_map(county_boundaries):
     """

@@ -1,4 +1,3 @@
-import pandas as pd
 import altair as alt
 
 def make_structure_chart(calfire_df):
@@ -37,19 +36,23 @@ def make_structure_chart(calfire_df):
     >>> chart.show()
     """
 
-    calfire_structure = calfire_df.groupby(['County', 'Structure_Category'])['Structure_Category'].count().reset_index(name="Count")
+    # calfire_structure = calfire_df.groupby(['County', 'Structure_Category'])['Structure_Category'].count().reset_index(name="Count")
+    calfire_df = calfire_df.groupby(['County', 'Structure_Category']).size().reset_index()
+    calfire_df.columns = ['County', 'Structure_Category', 'Count']
 
-    top_10 = (calfire_structure
+    calfire_df = calfire_df.compute()
+
+    top_10 = (calfire_df
           .groupby(['County'])['Count'].sum()
           .sort_values(ascending=False)
           .reset_index()
           .iloc[:10, 0])
     
-    calfire_structure = calfire_structure[calfire_structure['County'].isin(top_10)]
+    calfire_df = calfire_df[calfire_df['County'].isin(top_10)]
 
     alt.data_transformers.enable("vegafusion")
 
-    structure_chart = alt.Chart(calfire_structure).mark_bar().encode(
+    structure_chart = alt.Chart(calfire_df).mark_bar().encode(
         y=alt.Y("County:N",
                 title=None,
                 sort=top_10

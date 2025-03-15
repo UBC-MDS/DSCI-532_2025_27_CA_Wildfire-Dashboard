@@ -1,4 +1,3 @@
-import pandas as pd
 import altair as alt
 
 def make_time_series_chart(calfire_df, selected_counties=None):
@@ -7,7 +6,7 @@ def make_time_series_chart(calfire_df, selected_counties=None):
 
     Parameters
     ----------
-    calfire_df : pd.DataFrame
+    calfire_df : DataFrame
         A DataFrame containing wildfire damage data with at least the following columns:
         - "Incident Start Date": A datetime column representing the start date of each wildfire incident.
         - "County": The county where the wildfire occurred.
@@ -42,28 +41,32 @@ def make_time_series_chart(calfire_df, selected_counties=None):
     >>> chart = make_time_series_chart(df)
     >>> chart.show()  # Displays the interactive time-series chart.
     """
-    if calfire_df.empty:
-        return {}
+    # if calfire_df.empty:
+    #     return {}
     
-    calfire_time_series = calfire_df.groupby(
+    calfire_df = calfire_df.groupby(
         [calfire_df["Incident Start Date"].dt.year, "County"]
     )["Assessed Improved Value"].sum().reset_index()
-    calfire_time_series.rename(columns={"Incident Start Date": "Year", "Assessed Improved Value": "Total Economic Loss (Billions of USD)"}, inplace=True)
-    calfire_time_series["Total Economic Loss (Billions of USD)"] /= 1e9
+    # calfire_time_series.rename(columns={"Incident Start Date": "Year", "Assessed Improved Value": "Total Economic Loss (Billions of USD)"}, inplace=True)
+    calfire_df.columns = ["Year", "County", "Total Economic Loss (Billions of USD)"]
+
+    calfire_df["Total Economic Loss (Billions of USD)"] /= 1e9
+
+    calfire_df = calfire_df.compute()
 
     top_10_counties = (
-        calfire_time_series.groupby("County")["Total Economic Loss (Billions of USD)"]
+        calfire_df.groupby("County")["Total Economic Loss (Billions of USD)"]
         .sum()
         .nlargest(10)
         .index.tolist()
     )
 
     if not selected_counties:
-        filtered_df = calfire_time_series[calfire_time_series["County"].isin(top_10_counties)]
+        filtered_df = calfire_df[calfire_df["County"].isin(top_10_counties)]
         selection = alt.selection_multi(fields=["County"], bind="legend", name="Select")
         opacity_rule = alt.condition(selection, alt.value(1), alt.value(0.2))
     else:
-        filtered_df = calfire_time_series[calfire_time_series["County"].isin(selected_counties)]
+        filtered_df = calfire_df[calfire_df["County"].isin(selected_counties)]
         selection = None
         opacity_rule = alt.value(1)
     color_scale = alt.Scale(scheme="category20")

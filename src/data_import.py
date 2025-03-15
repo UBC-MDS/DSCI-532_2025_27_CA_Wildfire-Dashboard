@@ -2,6 +2,7 @@ import pandas as pd
 import pickle
 import geopandas as gpd
 from millions_billions import millions_billions
+import dask.dataframe as dd
 
 def load_calfire_df():
     """
@@ -122,13 +123,17 @@ def load_calfire_df():
     # calfire_df = calfire_df.iloc[:int(calfire_df.shape[0]/25)] # reduce to 5k rows
 
     #Save pandas dataframe as csv
-    calfire_df.to_csv('data/processed/processed_cal_fire.csv', index=False)
+    # calfire_df.to_csv('data/processed/processed_cal_fire.csv', index=False)
     
-    # Saving df to serialized pickle file for faster reading
-    with open('data/processed/processed_cal_fire.pkl', 'wb') as f:
-        pickle.dump(calfire_df, f)
+    # # Saving df to serialized pickle file for faster reading
+    # with open('data/processed/processed_cal_fire.pkl', 'wb') as f:
+    #     pickle.dump(calfire_df, f)
 
+     # Convert to Dask DataFrame
+    dask_df = dd.from_pandas(calfire_df, npartitions=50)
 
+    # Save Dask DataFrame to Parquet file
+    dask_df.to_parquet('data/processed/processed_cal_fire.parquet')
 
 if __name__ == '__main__':
     load_calfire_df()

@@ -43,11 +43,8 @@ References
 ----------
 GitHub Repository: https://github.com/UBC-MDS/DSCI-532_2025_27_CA_Wildfire-Dashboard
 
-Last updated: March 5th, 2025
+Last updated: March 14th, 2025
 """
-
-
-
 
 import dash_bootstrap_components as dbc
 import dash_vega_components as dvc
@@ -286,7 +283,6 @@ timeseries_chart = dbc.Col([
                 )],
                 md=6)
 
-
 # bar chart of damage by stucture category and county
 structure_count=dbc.Col([
                     dbc.Card(
@@ -327,11 +323,10 @@ roof_chart = dbc.Col([
 reference_info = dbc.Row(
     dbc.Col([
         html.Hr(),
-        html.P("Developed by Gunisha Kaur, Thamer Aldawood, Elaine Chu and Forgive Agbesi."),
+        html.P("Developed by Elaine Chu, Forgive Agbesi, Gunisha Kaur and Thamer Aldawood."), # Ordered alphabetically
         html.P([
             "GitHub Repository: ",
             html.A("View on GitHub", href="https://github.com/UBC-MDS/DSCI-532_2025_27_CA_Wildfire-Dashboard", target="_blank")
         ]),
         html.P(f"Last updated: March 14th, 2025")
     ], style={"text-align": "center", "margin-top": "20px"}))
-

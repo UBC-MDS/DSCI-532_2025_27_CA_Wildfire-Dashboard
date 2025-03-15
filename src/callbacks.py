@@ -62,6 +62,7 @@ Example:
 from dash import Output, Input, callback, State, html, ctx, no_update
 import dash_bootstrap_components as dbc
 import pandas as pd
+import dask.dataframe as dd
 
 from .data import calfire_df, county_boundaries
 from .roof_chart import make_roof_chart
@@ -72,7 +73,7 @@ from .timeseries_chart import make_time_series_chart
 from .create_map import make_fire_damage_map
 from .components import main_font_size, main_font_color, theme_color, min_year, max_year
 
-import pickle
+first_run_complete = False
 
 # Server side callbacks/reactivity
 @callback(
@@ -96,9 +97,9 @@ import pickle
 )
 
 def update_charts(n_clicks_s, n_clicks_r, county, year, incident_name, selectedData):
+    global first_run_complete
 
-    with open('data/processed/processed_cal_fire.pkl', 'rb') as f:
-        calfire_df = pickle.load(f)
+    calfire_df = dd.read_parquet('data/processed/processed_cal_fire.parquet')
 
     # Reset filters 
     if 'reset' == ctx.triggered_id:
@@ -116,6 +117,11 @@ def update_charts(n_clicks_s, n_clicks_r, county, year, incident_name, selectedD
         
         if incident_name:
             calfire_df = calfire_df[calfire_df['Incident Name'].isin(list(incident_name))]
+
+    # Compute the filtered Dask DataFrame on the first run. It is lazy.
+    if not first_run_complete:
+        calfire_df = calfire_df.compute()
+        first_run_complete = True
 
     roof_chart = make_roof_chart(calfire_df)
     damage_chart = make_damage_chart(calfire_df)
@@ -163,5 +169,3 @@ def toggle_button(n, is_open):
     if n:
         return not is_open
     return is_open
-
-

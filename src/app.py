@@ -51,8 +51,8 @@ Date:
 
 from dash import Dash, html
 import dash_bootstrap_components as dbc
-from . import callbacks
 from .components import title, global_widgets, cali_map, summary_card, damage_level, timeseries_chart, structure_count, roof_chart, info_section, reference_info, hover_info
+from . import callbacks
 
 # Initiatlize the app
 app = Dash(__name__, 

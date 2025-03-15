@@ -1,4 +1,3 @@
-import pandas as pd
 import altair as alt
 
 def make_roof_chart(calfire_df):
@@ -8,7 +7,7 @@ def make_roof_chart(calfire_df):
 
     Parameters
     ----------
-    calfire_df : pd.DataFrame
+    calfire_df : DataFrame
         A DataFrame containing wildfire damage data with at least the following columns:
         - "Roof Construction": Type of roof construction.
         - "Damage": Damage severity category.
@@ -34,10 +33,14 @@ def make_roof_chart(calfire_df):
     roof_order = (
         calfire_df.groupby("Roof Construction")
         .size()
-        .reset_index(name="Total Houses")
+        .reset_index() 
+        .rename(columns={0: "Total Houses"}) 
+        .compute()
         .sort_values("Total Houses", ascending=False)["Roof Construction"]
         .tolist()
     )
+
+    calfire_df = calfire_df.compute()
 
     roof_chart = alt.Chart(calfire_df).mark_bar().encode(
         y=alt.Y("Roof Construction:N", 

@@ -1,4 +1,3 @@
-import pandas as pd
 import altair as alt
 
 def make_damage_chart(calfire_df):
@@ -7,7 +6,7 @@ def make_damage_chart(calfire_df):
 
     Parameters
     ----------
-    calfire_df : pd.DataFrame
+    calfire_df : DataFrame
         A DataFrame containing wildfire damage data with a column named 'Damage'.
 
     Returns
@@ -18,9 +17,17 @@ def make_damage_chart(calfire_df):
     -------
     >>> make_damage_chart(calfire_df)
     """
-    calfire_damage = calfire_df.groupby(['Damage_Category'])['Damage_Category'].count().reset_index(name="Count")
+    # calfire_df = calfire_df.groupby(['Damage_Category'])['Damage_Category'].count().reset_index(name="Count")
 
-    damage_chart = alt.Chart(calfire_damage).mark_arc(innerRadius=50).encode(
+    # Group by Damage_Category and count the number of records in each category
+    calfire_df = calfire_df.groupby('Damage_Category').size().reset_index()
+
+    # Compute the Dask DataFrame to get a Pandas DataFrame
+    calfire_df = calfire_df.compute()
+
+    calfire_df.columns = ["Damage_Category", "Count"]
+
+    damage_chart = alt.Chart(calfire_df).mark_arc(innerRadius=50).encode(
     theta="Count",
     color=alt.Color("Damage_Category:N",
                     title="Damage Category",
