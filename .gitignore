@@ -145,3 +145,4 @@ dmypy.json
 .DS_Store
 
 # Source: https://github.com/github/gitignore/blob/main/Python.gitignore
+src/lab.ipynb
