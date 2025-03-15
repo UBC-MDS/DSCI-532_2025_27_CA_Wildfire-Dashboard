@@ -100,6 +100,7 @@ def make_time_series_chart(calfire_df, selected_counties=None):
         ),
         opacity=opacity_rule,
         tooltip=["Year:O", "County", alt.Tooltip("Total Economic Loss:Q", title=y_axis_title, format=y_axis_format)]
+
     ).properties(
         width='container',
         height=200

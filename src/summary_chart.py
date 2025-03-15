@@ -1,4 +1,5 @@
 import pandas as pd
+from .millions_billions import millions_billions
 
 def make_summary_chart(calfire_df):
 
@@ -34,6 +35,6 @@ def make_summary_chart(calfire_df):
      if "Assessed Improved Value" not in calfire_df.columns or calfire_df.empty:
          return 0
 
-     total_cost = calfire_df["Assessed Improved Value"].sum()/ 1e9 #convert the values to Billion
+     total_cost = millions_billions(calfire_df["Assessed Improved Value"].sum()) #convert the values to Millions or Billions
 
      return total_cost
