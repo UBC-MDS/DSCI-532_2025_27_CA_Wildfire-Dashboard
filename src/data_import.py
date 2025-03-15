@@ -117,6 +117,8 @@ def load_calfire_df():
     # Save processed dataframe into data folder
     # calfire_df.to_csv('data/processed/processed_cal_fire.csv', index=False)
 
+    calfire_df["Assessed Improved Value"] = calfire_df["Assessed Improved Value"].astype('int32') # Changed from float64 as we don't need that level of precision for each property
+
     #Save pandas dataframe as csv
     calfire_df.to_csv('data/processed/processed_cal_fire.csv', index=False)
     
