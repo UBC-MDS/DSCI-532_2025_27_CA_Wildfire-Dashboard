@@ -34,7 +34,7 @@ def make_damage_chart(calfire_df):
                                     "'E. Destroyed (>50%)': 'Destroyed (>50%)'}[datum.label]"
                                     )
                                     ),
-    tooltip=["Damage_Category", "Count"]).properties(
+    tooltip=["Damage_Category:O", "Count:Q"]).properties(
         width='container',
         height=200
     )

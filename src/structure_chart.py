@@ -69,7 +69,7 @@ def make_structure_chart(calfire_df):
                                                 "'G. Other Minor Structure': 'Other Minor Structure'}[datum.label]"
                                                 )
                                 ),
-                tooltip=["Structure_Category", "Count"]
+                tooltip=["Structure_Category:N", "Count:Q"]
                 ).properties(
         width='container',
         height=200
