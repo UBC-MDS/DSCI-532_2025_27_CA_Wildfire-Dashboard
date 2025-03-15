@@ -56,7 +56,7 @@ from .components import title, global_widgets, cali_map, summary_card, damage_le
 
 # Initiatlize the app
 app = Dash(__name__, 
-           external_stylesheets=[dbc.themes.FLATLY])
+           external_stylesheets=[dbc.themes.FLATLY], title="California Wildfire Dashboard", assets_folder = "assets")
 server = app.server
 
 # Layout
