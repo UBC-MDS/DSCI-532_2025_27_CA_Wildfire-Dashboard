@@ -120,7 +120,7 @@ def update_charts(n_clicks_s, n_clicks_r, county, year, incident_name, selectedD
 
     # Compute the filtered Dask DataFrame on the first run. It is lazy.
     if not first_run_complete:
-        calfire_df = calfire_df.compute()
+        # calfire_df = calfire_df.compute()
         first_run_complete = True
 
     roof_chart = make_roof_chart(calfire_df)
