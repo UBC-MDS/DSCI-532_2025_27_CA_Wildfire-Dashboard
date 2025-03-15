@@ -97,32 +97,30 @@ import pickle
 
 def update_charts(n_clicks_s, n_clicks_r, county, year, incident_name, selectedData):
 
+    with open('data/processed/processed_cal_fire.pkl', 'rb') as f:
+        calfire_df = pickle.load(f)
+
     # Reset filters 
     if 'reset' == ctx.triggered_id:
         county, year, incident_name, selectedData = None, [min_year, max_year], None, None
-    
-        filtered_df = calfire_df
-    else:
-        filtered_df = calfire_df[(calfire_df["Incident Start Date"].dt.year.between(year[0], year[1]))]
 
-        # if county:
-        #     filtered_df = filtered_df[filtered_df['County'].isin(list(county))]
-        #     selectedData = None
+    else:
+        calfire_df = calfire_df[(calfire_df["Incident Start Date"].dt.year.between(year[0], year[1]))]
 
         if selectedData:
             selected_counties = [point["hovertext"] for point in selectedData["points"]]
             county = list(set(selected_counties + county)) if county else selected_counties
             
         if county:
-            filtered_df = filtered_df[filtered_df['County'].isin(list(county))]
+            calfire_df = calfire_df[calfire_df['County'].isin(list(county))]
         
         if incident_name:
-            filtered_df = filtered_df[filtered_df['Incident Name'].isin(list(incident_name))]
+            calfire_df = calfire_df[calfire_df['Incident Name'].isin(list(incident_name))]
 
-    roof_chart = make_roof_chart(filtered_df)
-    damage_chart = make_damage_chart(filtered_df)
-    structure_chart = make_structure_chart(filtered_df)
-    total_cost = make_summary_chart(filtered_df)  
+    roof_chart = make_roof_chart(calfire_df)
+    damage_chart = make_damage_chart(calfire_df)
+    structure_chart = make_structure_chart(calfire_df)
+    total_cost = make_summary_chart(calfire_df)  
 
     # selectedData = None # To avoid filter being constantly overridden by map selection. Downside is map selection does not persist after filtering.
 
@@ -140,7 +138,7 @@ def update_charts(n_clicks_s, n_clicks_r, county, year, incident_name, selectedD
     ]
     
 
-    timeseries_chart = make_time_series_chart(filtered_df)
+    timeseries_chart = make_time_series_chart(calfire_df)
     # fire_damage_map = make_fire_damage_map(county_boundaries, selectedData)
 
     return (
