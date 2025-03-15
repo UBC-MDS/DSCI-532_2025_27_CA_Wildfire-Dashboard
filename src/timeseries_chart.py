@@ -48,11 +48,21 @@ def make_time_series_chart(calfire_df, selected_counties=None):
     calfire_time_series = calfire_df.groupby(
         [calfire_df["Incident Start Date"].dt.year, "County"]
     )["Assessed Improved Value"].sum().reset_index()
-    calfire_time_series.rename(columns={"Incident Start Date": "Year", "Assessed Improved Value": "Total Economic Loss (Billions of USD)"}, inplace=True)
-    calfire_time_series["Total Economic Loss (Billions of USD)"] /= 1e9
+    calfire_time_series.rename(columns={"Incident Start Date": "Year", "Assessed Improved Value": "Total Economic Loss"}, inplace=True)
+    #calfire_time_series["Total Economic Loss (Billions of USD)"] /= 1e9
+
+    max_loss = calfire_time_series["Total Economic Loss"].max()
+    if max_loss >= 1e9:
+        calfire_time_series["Total Economic Loss"] /= 1e9
+        y_axis_title = "Total Economic Loss (Billions of USD)"
+        y_axis_format = ",.0f"
+    else:
+        calfire_time_series["Total Economic Loss"] /= 1e6
+        y_axis_title = "Total Economic Loss (Millions of USD)"
+        y_axis_format = ",.0f"
 
     top_10_counties = (
-        calfire_time_series.groupby("County")["Total Economic Loss (Billions of USD)"]
+        calfire_time_series.groupby("County")["Total Economic Loss"]
         .sum()
         .nlargest(10)
         .index.tolist()
@@ -73,11 +83,11 @@ def make_time_series_chart(calfire_df, selected_counties=None):
             title="Year",
             axis=alt.Axis(labelAngle=45, tickMinStep=1)
         ),
-        y=alt.Y(
-    "Total Economic Loss (Billions of USD):Q",
-    title=None,  
-    scale=alt.Scale(zero=False),
-    axis=alt.Axis(format=",.0f")  
+       y=alt.Y(
+            "Total Economic Loss:Q",
+            title=y_axis_title,
+            scale=alt.Scale(zero=False),
+            axis=alt.Axis(format=y_axis_format)
         ),
         color=alt.Color(
             "County:N",
@@ -89,7 +99,7 @@ def make_time_series_chart(calfire_df, selected_counties=None):
             )
         ),
         opacity=opacity_rule,
-        tooltip=["Year:O", "County", alt.Tooltip("Total Economic Loss (Billions of USD):Q", title="Total Economic Loss (Billions of USD)", format="$,.2f")]
+        tooltip=["Year:O", "County", alt.Tooltip("Total Economic Loss:Q", title=y_axis_title, format=y_axis_format)]
     ).properties(
         width='container',
         height=200
