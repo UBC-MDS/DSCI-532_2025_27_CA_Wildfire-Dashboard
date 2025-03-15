@@ -57,7 +57,7 @@ def make_roof_chart(calfire_df):
                                     "'E. Destroyed (>50%)': 'Destroyed (>50%)'}[datum.label]"  
                         )  # Show original labels in legend
                     ),  
-        tooltip=["Roof Construction", "count()", "Damage_Category"]
+        tooltip=["Roof Construction:N", "count():Q", "Damage_Category:O"]
     ).properties(
         width='container',
         height=200

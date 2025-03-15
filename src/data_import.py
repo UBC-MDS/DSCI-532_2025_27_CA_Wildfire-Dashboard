@@ -1,5 +1,7 @@
 import pandas as pd
 import pickle
+import geopandas as gpd
+from millions_billions import millions_billions
 
 def load_calfire_df():
     """
@@ -78,12 +80,29 @@ def load_calfire_df():
 
     calfire_df["Structure_Category"] = calfire_df["Structure Category"].map(structure_rename)
 
-    # Save processed dataframe into data folder
-    calfire_df.to_csv('.data/processed/processed_cal_fire.csv', index=False)
+    # Read geojson file
+    geojson_file_path = "data/raw/california-counties.geojson"
+    county_boundaries = gpd.read_file(geojson_file_path)[["name", "geometry"]]
+    # county_boundaries["name"] = county_boundaries["name"] # .str.strip() # don't think it's needed
 
-    # Saving df to serialized pickle file for faster reading
-    with open('data/processed/processed_cal_fire.pkl', 'wb') as f:
-        pickle.dump(calfire_df, f)
+    # Pre-compute county statistics and merge with county boundaries
+    county_stats = calfire_df.groupby("County").agg(
+        Fire_Count=("Incident Name", "count"),
+        Economic_Loss=("Assessed Improved Value", "sum")        
+    ).reset_index()
+
+    county_boundaries = county_boundaries.merge(county_stats, left_on="name", right_on="County", how="left").drop(columns=["County"])
+    county_boundaries.columns = ['County', 'geometry', 'Fire Count', 'Assessed Improved Value'] # renaming to remove underscores
+
+    county_boundaries["Fire Count"] = county_boundaries["Fire Count"].fillna(0)
+    county_boundaries["Assessed Improved Value"] = county_boundaries["Assessed Improved Value"].fillna(0)
+    county_boundaries["Economic Loss"] = county_boundaries["Assessed Improved Value"].apply(millions_billions)
+
+
+
+    # Save county_boundaries to serialized pickle file for faster reading
+    with open('data/processed/county_boundaries.pkl', 'wb') as f:
+        pickle.dump(county_boundaries, f)
 
     # Global variables are created here (Should be updated whenever dataset is updated)
     counties = sorted(calfire_df["County"].dropna().unique())
@@ -92,26 +111,42 @@ def load_calfire_df():
     incidents = sorted(calfire_df["Incident Name"].dropna().unique())
 
     # Saving the global variables:
-    with open('../data/processed/global_vars.pkl', 'wb') as f:
+    with open('data/processed/global_vars.pkl', 'wb') as f:
         pickle.dump([counties, min_year, max_year, incidents], f)
+
+    # Save processed dataframe into data folder
+    # calfire_df.to_csv('data/processed/processed_cal_fire.csv', index=False)
+
+    calfire_df["Assessed Improved Value"] = calfire_df["Assessed Improved Value"].astype('int32') # Changed from float64 as we don't need that level of precision for each property
+
+    # calfire_df = calfire_df.iloc[:int(calfire_df.shape[0]/25)] # reduce to 5k rows
+
+    #Save pandas dataframe as csv
+    calfire_df.to_csv('data/processed/processed_cal_fire.csv', index=False)
+    
+    # Saving df to serialized pickle file for faster reading
+    with open('data/processed/processed_cal_fire.pkl', 'wb') as f:
+        pickle.dump(calfire_df, f)
+
+
 
 if __name__ == '__main__':
     load_calfire_df()
 
-    # columns = ['* Damage', '* City', 'County', '* Incident Name', 'Incident Number (e.g. CAAEU 123456)', 'Incident Start Date', '* Structure Type',
-    #    'Structure Category', '* Roof Construction', '* Eaves', '* Vent Screen', '* Exterior Siding', '* Window Pane',
-    #    '* Deck/Porch On Grade', '* Deck/Porch Elevated', '* Patio Cover/Carport Attached to Structure',
-    #    '* Fence Attached to Structure', 'Distance - Propane Tank to Structure',
-    #    'Distance - Residence to Utility/Misc Structure &gt; 120 SQFT', 'Fire Name (Secondary)',
-    #    'Assessed Improved Value (parcel)', 'Year Built (parcel)']
+# columns = ['* Damage', '* City', 'County', '* Incident Name', 'Incident Number (e.g. CAAEU 123456)', 'Incident Start Date', '* Structure Type',
+#    'Structure Category', '* Roof Construction', '* Eaves', '* Vent Screen', '* Exterior Siding', '* Window Pane',
+#    '* Deck/Porch On Grade', '* Deck/Porch Elevated', '* Patio Cover/Carport Attached to Structure',
+#    '* Fence Attached to Structure', 'Distance - Propane Tank to Structure',
+#    'Distance - Residence to Utility/Misc Structure &gt; 120 SQFT', 'Fire Name (Secondary)',
+#    'Assessed Improved Value (parcel)', 'Year Built (parcel)']
 
-    # renamed_columns = ["Damage", "City", "County", "Incident Name", "Incident Number", "Incident Start Date", "Structure Type", "Structure Category",
-    #                 "Roof Construction", "Eaves", "Vent Screen", "Exterior Siding", 'Window Pane',
-    #     'Deck/Porch On Grade', 'Deck/Porch Elevated',
-    #     'Patio Cover/Carport Attached to Structure',
-    #     'Fence Attached to Structure', 'Distance - Propane Tank to Structure',
-    #     'Distance - Residence to Utility/Misc Structure',
-    #     'Fire Name (Secondary)',
-    #     'Assessed Improved Value', 'Year Built']
+# renamed_columns = ["Damage", "City", "County", "Incident Name", "Incident Number", "Incident Start Date", "Structure Type", "Structure Category",
+#                 "Roof Construction", "Eaves", "Vent Screen", "Exterior Siding", 'Window Pane',
+#     'Deck/Porch On Grade', 'Deck/Porch Elevated',
+#     'Patio Cover/Carport Attached to Structure',
+#     'Fence Attached to Structure', 'Distance - Propane Tank to Structure',
+#     'Distance - Residence to Utility/Misc Structure',
+#     'Fire Name (Secondary)',
+#     'Assessed Improved Value', 'Year Built']
 
-    # I'm keeping these as comments in case we find a use for one of these columns in the future so we can easily add them back in.
+# I'm keeping these as comments in case we find a use for one of these columns in the future so we can easily add them back in.

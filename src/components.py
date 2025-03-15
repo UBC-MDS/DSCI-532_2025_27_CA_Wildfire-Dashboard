@@ -61,7 +61,7 @@ from .summary_chart import make_summary_chart
 from .timeseries_chart import make_time_series_chart
 from .create_map import make_fire_damage_map
 
-from .data import calfire_df
+from .data import calfire_df, county_boundaries
 
 # Declare global variables
 theme_color = "#d1d6de"
@@ -106,7 +106,7 @@ app_info = [
             'max-width': '1200px'}
     ),
     html.Div(
-        "Here you can explore the impact of wildfires across different counties in California for the past decade.",
+        "Here you can explore the impact of wildfires across different counties in California for the past decade (2013-2025).",
         style={'font-size': '16px',
             'max-width': '1200px'}
     ),
@@ -173,11 +173,12 @@ global_widgets = dbc.Col(
     html.Br(),
     dbc.Row(
         [dbc.Col(
-            dbc.Button('Submit', id='submit'),
-            width={'size':3, 'offset': 3}
+            dbc.Button('Submit', id='submit', style = {'width': '140px'}),
+            style={'textAlign': 'center'}
             ),
         dbc.Col(
-            dbc.Button('Reset All Filters', id='reset')
+            dbc.Button('Reset All Filters', id='reset', style = {'width': '140px'}),
+            style={'textAlign': 'center'}
             )]
             ),
                 ], 
@@ -196,7 +197,7 @@ cali_map = dbc.Row(
                                         'background-color': theme_color,
                                         'color':main_font_color}),
                     dcc.Graph(id="fire_damage_map",
-                              figure=make_fire_damage_map(calfire_df, None),
+                              figure=make_fire_damage_map(county_boundaries),
                               style={'width': '800px',
                                     "display": "flex",
                                     "justify-content": "center",
@@ -212,7 +213,7 @@ summary_card = dbc.Row([
                                        "background-color": theme_color,
                                         "fontSize": main_font_size,
                                         'color':main_font_color}),
-                dbc.CardBody(f'${make_summary_chart(calfire_df):.2f} Billion USD',
+                dbc.CardBody(f'{make_summary_chart(calfire_df)} USD',
                              style={"textAlign": "center",
                                     "fontSize": "21px"})],
                                     # style={'border':'none'},
@@ -238,12 +239,13 @@ hover_info = dbc.Row(
                                                "padding": "2px 5px",
                                                "border-radius": "4px"
                                                }),
-                              " to select multiple, click submit to apply filter*"],
+                              " to select multiple, click submit to apply filter"],
                             style={"text-align": "center",
-                                   "font-size": "16px",
+                                   "font-size": "14px",
                                    "position": "absolute",
                                     "bottom": 0,
-                                    "right": 0},
+                                    "right": 0,
+                                    "left": 50},
                         )
                     ],
                     className="position-relative" 
@@ -330,6 +332,6 @@ reference_info = dbc.Row(
             "GitHub Repository: ",
             html.A("View on GitHub", href="https://github.com/UBC-MDS/DSCI-532_2025_27_CA_Wildfire-Dashboard", target="_blank")
         ]),
-        html.P(f"Last updated: March 5th, 2025")
+        html.P(f"Last updated: March 14th, 2025")
     ], style={"text-align": "center", "margin-top": "20px"}))
 
