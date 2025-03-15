@@ -1,35 +1,15 @@
-"""
-Wildfire Damage Choropleth Map
-
-This script generates a choropleth map of California counties using wildfire damage data. 
-
-Functions
----------
-- plot_map(county_data, selectedData=None):
-    Creates a choropleth map visualizing the number of wildfires and economic loss by county.
-    
-- make_fire_damage_map(filtered_df, selectedData):
-    Aggregates wildfire data by county and merges it with geographic boundaries before calling `plot_map()`.
-
-Dependencies
-------------
-- plotly.express
-- pandas
-- geopandas
-
-"""
-
 import plotly.express as px
-from .data import county_boundaries
+import geopandas as gpd
+import pandas as pd
 
-def plot_map(county_data, selectedData=None):
+def make_fire_damage_map(county_boundaries):
     """
     Generates a choropleth map of California counties with wildfire damage data.
 
     Parameters
     ----------
-    county_data : pandas.DataFrame
-        A DataFrame containing county wildfire statistics and geographic boundaries.
+    county_boundaries : geopandas.GeoDataFrame
+        A GeoDataFrame containing county boundaries with precomputed columns "Fire Count" and "Economic Loss".
     selectedData : dict, optional
         Data from a previous selection event, used to highlight selected counties (default is None).
 
@@ -40,69 +20,27 @@ def plot_map(county_data, selectedData=None):
         
     Examples
     --------
-    >>> plot_map(county_fire_data)
+    >>> create_fire_damage_map( county_boundaries)
     """
-    county_data = county_data.reset_index(drop=True)
-    
+
     fig = px.choropleth(
-        county_data,
-        geojson=county_data.geometry,
-        locations=county_data.index,
-        color="Fire_Count",
-        labels={"Fire_Count": "Number of Fires", "Assessed_Value_B": "Economic Loss"},
+        county_boundaries,
+        geojson=county_boundaries.geometry,
+        locations=county_boundaries.index,
+        color="Assessed Improved Value",
+        labels={"Assessed Improved Value": "Economic Loss (Billion $)"},
         projection="mercator",
-        hover_name="CountyName", 
+        hover_name="County", 
         color_continuous_scale="Reds",
-        hover_data={"CountyName": False, "Assessed_Value_B": True, "Fire_Count": True},
-        custom_data=["Assessed_Value_B"]   
+        hover_data={"County": False, "Economic Loss": True, "Fire Count": True},
+        custom_data=["Economic Loss", "Fire Count"],
     )
     
     fig.update_layout(clickmode='event+select')
 
-    if selectedData:
-        selected_indices = [point['pointIndex'] for point in selectedData['points']]
-        fig.update_traces(selectedpoints=selected_indices)
-
     fig.update_geos(fitbounds="locations", visible=False)
 
     # Remove index from tooltip
-    fig.update_traces(hovertemplate="<b>%{hovertext}</b><br>Economic Loss: %{customdata[0]}<br>Number of Fires: %{z}<extra></extra>")
+    fig.update_traces(hovertemplate="<b>%{hovertext}</b><br>Economic Loss: %{customdata[0]}<br>Number of Fires: %{customdata[1]}<extra></extra>")
 
     return fig
-
-
-def make_fire_damage_map(filtered_df, selectedData):
-    """
-    Prepares data for the choropleth map by aggregating wildfire statistics and merging with county boundaries.
-
-    Parameters
-    ----------
-    filtered_df : pandas.DataFrame
-        A DataFrame containing wildfire incidents with columns "County", "Damage", and "Assessed Improved Value".
-    selectedData : dict
-        Selection data from the map for interactive filtering.
-
-    Returns
-    -------
-    plotly.graph_objects.Figure
-        A choropleth map displaying wildfire damage across California counties.
-
-    Examples
-    --------
-    >>> make_fire_damage_map(filtered_df)
-    """
-    
-    # Aggregate fire damage count per county
-    fire_count = filtered_df.groupby("County").agg(
-        Fire_Count=("Damage", "count"),
-        Assessed_Value=("Assessed Improved Value", "sum") 
-    ).reset_index() 
-    fire_count["Assessed_Value"] = fire_count["Assessed_Value"] / 1e9
-
-    # Merge with county boundaries
-    county_fire_data = county_boundaries.merge(fire_count, left_on="CountyName", right_on="County", 
-                                               how="left").infer_objects(copy=False).fillna(0)
-    
-    county_fire_data["Assessed_Value_B"] = county_fire_data["Assessed_Value"].apply(lambda x: f"${x:,.2f}B")
-    
-    return plot_map(county_fire_data, selectedData)

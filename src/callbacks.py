@@ -57,23 +57,13 @@ This script is part of a Dash app and should be run within a Dash context.
 Example:
     >>> from callbacks import update_charts, toggle_button
     >>> update_charts(["Los Angeles"], [2015, 2020], None, None)
-
-Author
-------
-[Your Name]
-
-Date
-----
-[YYYY-MM-DD]
 """
-
-
 
 from dash import Output, Input, callback, State, html, ctx, no_update
 import dash_bootstrap_components as dbc
 import pandas as pd
 
-from .data import calfire_df
+from .data import calfire_df, county_boundaries
 from .roof_chart import make_roof_chart
 from .damage_chart import make_damage_chart
 from .structure_chart import make_structure_chart
@@ -82,6 +72,8 @@ from .timeseries_chart import make_time_series_chart
 from .create_map import make_fire_damage_map
 from .components import main_font_size, main_font_color, theme_color, min_year, max_year
 
+import pickle
+
 # Server side callbacks/reactivity
 @callback(
     [Output('roof_chart', 'spec'),
@@ -89,11 +81,9 @@ from .components import main_font_size, main_font_color, theme_color, min_year, 
      Output('structure_chart', 'spec'),
      Output('summary_card', 'children'),
      Output('timeseries_chart', 'spec'),
-     Output('fire_damage_map', 'figure'),
      Output('county', 'value'),
      Output('year', 'value'),
      Output('incident_name', 'value'),
-     Output('fire_damage_map', 'selectedData')
     ],
     [Input('submit', 'n_clicks'),
      Input('reset', 'n_clicks'),
@@ -109,14 +99,19 @@ def update_charts(n_clicks_s, n_clicks_r, county, year, incident_name, selectedD
 
     # Reset filters 
     if 'reset' == ctx.triggered_id:
-        county, year, incident_name = None, [min_year, max_year], None
+        county, year, incident_name, selectedData = None, [min_year, max_year], None, None
+    
         filtered_df = calfire_df
     else:
         filtered_df = calfire_df[(calfire_df["Incident Start Date"].dt.year.between(year[0], year[1]))]
 
+        # if county:
+        #     filtered_df = filtered_df[filtered_df['County'].isin(list(county))]
+        #     selectedData = None
+
         if selectedData:
             selected_counties = [point["hovertext"] for point in selectedData["points"]]
-            county = selected_counties
+            county = list(set(selected_counties + county)) if county else selected_counties
             
         if county:
             filtered_df = filtered_df[filtered_df['County'].isin(list(county))]
@@ -129,6 +124,8 @@ def update_charts(n_clicks_s, n_clicks_r, county, year, incident_name, selectedD
     structure_chart = make_structure_chart(filtered_df)
     total_cost = make_summary_chart(filtered_df)  
 
+    # selectedData = None # To avoid filter being constantly overridden by map selection. Downside is map selection does not persist after filtering.
+
     summary_card_update = [  
         dbc.CardHeader("Total Economic Loss",
                        style={"textAlign": "center",
@@ -137,17 +134,14 @@ def update_charts(n_clicks_s, n_clicks_r, county, year, incident_name, selectedD
                                 "fontSize": main_font_size,
                               'color':main_font_color}),
         dbc.CardBody(
-            f'${total_cost:.2f} Billion USD' if total_cost else "No Data Available",
+            f'{total_cost} USD' if total_cost else "No Data Available",
             style={"textAlign": "center", "fontSize": "21px"}
         )
     ]
     
 
     timeseries_chart = make_time_series_chart(filtered_df)
-    fire_damage_map = make_fire_damage_map(filtered_df, selectedData)
-
-    selectedData = None # to avoid overriding new changes in filter by existing selected counties in map
-
+    # fire_damage_map = make_fire_damage_map(county_boundaries, selectedData)
 
     return (
         roof_chart.to_dict(format="vega"),
@@ -155,12 +149,9 @@ def update_charts(n_clicks_s, n_clicks_r, county, year, incident_name, selectedD
         structure_chart.to_dict(format="vega"),
         summary_card_update, 
         timeseries_chart.to_dict(format="vega"),
-        fire_damage_map,
         county,
         year,
         incident_name,
-        selectedData,
-        
     )
 
 @callback(
