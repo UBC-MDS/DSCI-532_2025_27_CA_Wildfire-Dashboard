@@ -32,9 +32,9 @@ def make_summary_chart(calfire_df):
     >>> chart = make_summary_chart(df)
     >>> chart.show()  # Displays the total economic loss chart.
     """
-     if "Assessed Improved Value" not in calfire_df.columns or calfire_df.empty:
+     if "Total Economic Loss" not in calfire_df.columns or calfire_df.empty:
          return 0
 
-     total_cost = millions_billions(calfire_df["Assessed Improved Value"].sum()) #convert the values to Millions or Billions
+     total_cost = millions_billions(calfire_df["Total Economic Loss"].sum()) #convert the values to Millions or Billions
 
      return total_cost
