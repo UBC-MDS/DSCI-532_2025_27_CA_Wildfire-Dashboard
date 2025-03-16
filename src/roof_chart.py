@@ -30,22 +30,25 @@ def make_roof_chart(calfire_df):
     """
     alt.data_transformers.enable("vegafusion")
 
+    damage_table = pd.DataFrame(calfire_df.columns[:47].to_list(), columns=[ "Roof Construction", "Damage Category"])
+
+    damage_count = pd.DataFrame(calfire_df.iloc[:, :47].sum(axis=0).values, columns=["Count"])
+
+    roof_damage = pd.concat([damage_table, damage_count], axis=1)
+
     # Compute total count per Roof Construction for sorting
     roof_order = (
-        calfire_df.groupby("Roof Construction")
-        .size()
-        .reset_index(name="Total Houses")
-        .sort_values("Total Houses", ascending=False)["Roof Construction"]
-        .tolist()
+        roof_damage.groupby("Roof Construction")['Count']
+        .sum().sort_values(ascending=False).index.tolist()
     )
 
-    roof_chart = alt.Chart(calfire_df).mark_bar().encode(
+    roof_chart = alt.Chart(roof_damage).mark_bar().encode(
         y=alt.Y("Roof Construction:N", 
                 title=None, 
                 sort=roof_order  # Sort by total house count (descending)
             ),  
-        x=alt.X("count()", title="Number of Houses"),
-        color=alt.Color("Damage_Category:N",  # Use renamed categories for sorting
+        x=alt.X("Count", title="Number of Houses"),
+        color=alt.Color("Damage Category:N",  # Use renamed categories for sorting
                         title="Damage Category",
                         scale=alt.Scale(scheme="reds"),
                         legend=alt.Legend(
@@ -57,7 +60,7 @@ def make_roof_chart(calfire_df):
                                     "'E. Destroyed (>50%)': 'Destroyed (>50%)'}[datum.label]"  
                         )  # Show original labels in legend
                     ),  
-        tooltip=["Roof Construction:N", "count():Q", "Damage_Category:O"]
+        tooltip=["Roof Construction:N", "count():Q", "Damage Category:O"]
     ).properties(
         width='container',
         height=200

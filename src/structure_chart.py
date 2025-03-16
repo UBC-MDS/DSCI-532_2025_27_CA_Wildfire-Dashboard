@@ -37,13 +37,16 @@ def make_structure_chart(calfire_df):
     >>> chart.show()
     """
 
-    calfire_structure = calfire_df.groupby(['County', 'Structure_Category'])['Structure_Category'].count().reset_index(name="Count")
+    calfire_structure = (calfire_df
+                         .iloc[:, list(range(47, 54)) + [56]]
+                         .melt(id_vars='County',
+                               var_name='Structure Category',
+                               value_name='Count'))
 
     top_10 = (calfire_structure
           .groupby(['County'])['Count'].sum()
-          .sort_values(ascending=False)
-          .reset_index()
-          .iloc[:10, 0])
+          .nlargest(10)
+          .index.tolist())
     
     calfire_structure = calfire_structure[calfire_structure['County'].isin(top_10)]
 
@@ -55,7 +58,7 @@ def make_structure_chart(calfire_df):
                 sort=top_10
                 ), 
                 x=alt.X("Count", title="Number of Structures Damaged"),
-                color=alt.Color("Structure_Category:N",
+                color=alt.Color("Structure Category:N",
                                 title="Structure Category",
                                 scale=alt.Scale(scheme="paired"),
                                 legend=alt.Legend(
@@ -69,7 +72,7 @@ def make_structure_chart(calfire_df):
                                                 "'G. Other Minor Structure': 'Other Minor Structure'}[datum.label]"
                                                 )
                                 ),
-                tooltip=["Structure_Category:N", "Count:Q"]
+                tooltip=["Structure Category:N", "Count:Q"]
                 ).properties(
         width='container',
         height=200

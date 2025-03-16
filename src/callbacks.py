@@ -105,7 +105,7 @@ def update_charts(n_clicks_s, n_clicks_r, county, year, incident_name, selectedD
         county, year, incident_name, selectedData = None, [min_year, max_year], None, None
 
     else:
-        calfire_df = calfire_df[(calfire_df["Incident Start Date"].dt.year.between(year[0], year[1]))]
+        calfire_df = calfire_df[(calfire_df["Year"].between(year[0], year[1]))]
 
         if selectedData:
             selected_counties = [point["hovertext"] for point in selectedData["points"]]

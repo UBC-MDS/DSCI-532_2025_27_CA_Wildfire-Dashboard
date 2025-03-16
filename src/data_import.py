@@ -121,12 +121,29 @@ def load_calfire_df():
 
     # calfire_df = calfire_df.iloc[:int(calfire_df.shape[0]/25)] # reduce to 5k rows
 
+    ### Further dataframe to only contain required summary counts
+    calfire_df["Year"] = pd.to_datetime(calfire_df["Incident Start Date"], format = 'mixed').dt.year
+
+    # Aggregate damage summary
+    damage_df = calfire_df.pivot_table(index=['Incident Name', 'Year', 'County'], columns=['Roof Construction', 'Damage_Category'], aggfunc= 'size', fill_value=0).reset_index().iloc[:, 3:]
+
+    # Aggregate structure summary
+    structure_df = calfire_df.pivot_table(index=['Incident Name', 'Year', 'County'], columns=['Structure_Category'], aggfunc= 'size', fill_value=0).reset_index().iloc[:, 3:]
+
+    # Aggregate financial summary
+    value_df = calfire_df.groupby(['Incident Name', 'Year', 'County'], as_index=False)['Assessed Improved Value'].sum()
+
+    value_df.rename(columns={"Assessed Improved Value": "Total Economic Loss"}, inplace=True)
+
+    # Summary dataset
+    summary_df = pd.concat([damage_df, structure_df, value_df], axis=1)
+
     #Save pandas dataframe as csv
-    calfire_df.to_csv('data/processed/processed_cal_fire.csv', index=False)
+    summary_df.to_csv('data/processed/processed_cal_fire.csv', index=False)
     
     # Saving df to serialized pickle file for faster reading
     with open('data/processed/processed_cal_fire.pkl', 'wb') as f:
-        pickle.dump(calfire_df, f)
+        pickle.dump(summary_df, f)
 
 
 

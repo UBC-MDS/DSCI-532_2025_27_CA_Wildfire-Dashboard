@@ -18,11 +18,19 @@ def make_damage_chart(calfire_df):
     -------
     >>> make_damage_chart(calfire_df)
     """
-    calfire_damage = calfire_df.groupby(['Damage_Category'])['Damage_Category'].count().reset_index(name="Count")
+    alt.data_transformers.enable("vegafusion")
+
+    damage_table = pd.DataFrame(calfire_df.columns[:47].to_list(), columns=[ "Roof Construction", "Damage Category"])
+
+    damage_count = pd.DataFrame(calfire_df.iloc[:, :47].sum(axis=0).values, columns=["Count"])
+
+    calfire_damage = (pd.concat([damage_table, damage_count], axis=1)
+                      .groupby(['Damage Category'])['Count']
+                      .sum().reset_index(name="Count"))
 
     damage_chart = alt.Chart(calfire_damage).mark_arc(innerRadius=50).encode(
     theta="Count",
-    color=alt.Color("Damage_Category:N",
+    color=alt.Color("Damage Category:N",
                     title="Damage Category",
                     scale=alt.Scale(scheme="reds"),
                     legend=alt.Legend(
@@ -34,7 +42,7 @@ def make_damage_chart(calfire_df):
                                     "'E. Destroyed (>50%)': 'Destroyed (>50%)'}[datum.label]"
                                     )
                                     ),
-    tooltip=["Damage_Category:O", "Count:Q"]).properties(
+    tooltip=["Damage Category:O", "Count:Q"]).properties(
         width='container',
         height=200
     )

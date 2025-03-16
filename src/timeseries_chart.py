@@ -36,7 +36,7 @@ def make_time_series_chart(calfire_df, selected_counties=None):
     >>> data = {
     ...     "Incident Start Date": pd.to_datetime(["2015-06-01", "2016-07-15", "2016-09-10"]),
     ...     "County": ["Los Angeles", "San Diego", "San Diego"],
-    ...     "Assessed Improved Value": [100000000, 50000000, 75000000]
+    ...     "Total Economic Loss": [100000000, 50000000, 75000000]
     ... }
     >>> df = pd.DataFrame(data)
     >>> chart = make_time_series_chart(df)
@@ -45,10 +45,10 @@ def make_time_series_chart(calfire_df, selected_counties=None):
     if calfire_df.empty:
         return {}
     
-    calfire_time_series = calfire_df.groupby(
-        [calfire_df["Incident Start Date"].dt.year, "County"]
-    )["Assessed Improved Value"].sum().reset_index()
-    calfire_time_series.rename(columns={"Incident Start Date": "Year", "Assessed Improved Value": "Total Economic Loss"}, inplace=True)
+    calfire_time_series = (calfire_df
+                           .groupby(['County', 'Year'])["Total Economic Loss"]
+                           .sum().reset_index())
+
     #calfire_time_series["Total Economic Loss (Billions of USD)"] /= 1e9
 
     max_loss = calfire_time_series["Total Economic Loss"].max()
