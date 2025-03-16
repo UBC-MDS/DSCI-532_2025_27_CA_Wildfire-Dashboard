@@ -133,6 +133,8 @@ def load_calfire_df():
     # Aggregate financial summary
     value_df = calfire_df.groupby(['Incident Name', 'Year', 'County'], as_index=False)['Assessed Improved Value'].sum()
 
+    value_df.rename(columns={"Assessed Improved Value": "Total Economic Loss"}, inplace=True)
+
     # Summary dataset
     summary_df = pd.concat([damage_df, structure_df, value_df], axis=1)
 
