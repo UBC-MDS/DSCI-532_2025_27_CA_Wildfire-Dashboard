@@ -14,7 +14,6 @@
 - Create favicon and tab title
 - Enhance user guidance and context through text.
 - The performance of the dashboard was improved by:
-  - Cache initial dashboard
   - optimizing our preprocessed data and only keeping pre-aggregating key values from our raw dataset
   - Save preprocessed data in more efficient format (other than CSV) (parquet / feather / pickle).
   - "Apply filters" button to avoid updating the entire dashboard with every single filter input.
