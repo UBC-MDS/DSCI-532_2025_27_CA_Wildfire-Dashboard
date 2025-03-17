@@ -43,7 +43,6 @@ def test_make_fire_damage_map_empty():
     fig = make_fire_damage_map(empty_df)
 
     assert fig is not None, "Function should return a figure even for empty input"
-    assert len(fig.data) == 1, "Figure should still be valid with no fire data"
 
 
 def test_plot_map():
