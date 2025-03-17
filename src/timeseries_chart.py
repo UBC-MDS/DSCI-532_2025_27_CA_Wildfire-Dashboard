@@ -56,9 +56,12 @@ def make_time_series_chart(calfire_df, selected_counties=None):
         calfire_time_series["Total Economic Loss"] /= 1e9
         y_axis_title = "Total Economic Loss (Billions of USD)"
         y_axis_format = ",.0f"
-    else:
+    elif max_loss >= 1e6:
         calfire_time_series["Total Economic Loss"] /= 1e6
         y_axis_title = "Total Economic Loss (Millions of USD)"
+        y_axis_format = ",.0f"
+    else:
+        y_axis_title = "Total Economic Loss (USD)"
         y_axis_format = ",.0f"
 
     top_10_counties = (
