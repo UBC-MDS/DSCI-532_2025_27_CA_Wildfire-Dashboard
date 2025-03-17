@@ -73,84 +73,119 @@ from .create_map import make_fire_damage_map
 from .components import main_font_size, main_font_color, theme_color, min_year, max_year
 
 import pickle
+from flask_caching import Cache
+from flask import Flask
+
+app = Flask(__name__)
+
+app.config['CACHE_TYPE'] = 'simple'
+cache = Cache(app)
+
+# Cache original dataframe
+@cache.memoize()
+def load_data():
+    with open('data/processed/processed_cal_fire.pkl', 'rb') as f:
+        return pickle.load(f)
+    
+calfire_df = load_data()
+
+@callback(
+    [Output('county', 'value'),
+     Output('year', 'value'),
+     Output('incident_name', 'value')],
+    [Input('submit', 'n_clicks'),
+     Input('reset', 'n_clicks')],
+    [State('county', 'value'),
+     State('year', 'value'),
+     State('incident_name', 'value'),
+     State('fire_damage_map', 'selectedData')],
+    prevent_initial_call=True
+)
+def update_filters(n_clicks_s, n_clicks_r, county, year, incident_name, selectedData):
+    min_year, max_year = calfire_df['Year'].min(), calfire_df['Year'].max()
+    # Reset filters
+    if 'reset' == ctx.triggered_id:
+        return None, [min_year, max_year], None
+
+    # Update filters based on map selection
+    if selectedData:
+        selected_counties = [point["hovertext"] for point in selectedData["points"]]
+        county = list(set(selected_counties + (county or [])))
+
+    return county, year, incident_name
 
 # Server side callbacks/reactivity
 @callback(
     [Output('roof_chart', 'spec'),
      Output('damage_chart', 'spec'),
      Output('structure_chart', 'spec'),
-     Output('summary_card', 'children'),
-     Output('timeseries_chart', 'spec'),
-     Output('county', 'value'),
-     Output('year', 'value'),
-     Output('incident_name', 'value'),
-    ],
-    [Input('submit', 'n_clicks'),
-     Input('reset', 'n_clicks'),
-     State('county', 'value'),
+     Output('timeseries_chart', 'spec')],
+    [Input('submit', 'n_clicks')],
+    [State('county', 'value'),
      State('year', 'value'),
-     State('incident_name', 'value'),
-     State('fire_damage_map', 'selectedData'),
-    ],
-    # prevent_initial_call=True
+     State('incident_name', 'value')],
+    prevent_initial_call=True
 )
+def update_charts(n_clicks, county, year, incident_name):
+    filtered_df = calfire_df.copy()
 
-def update_charts(n_clicks_s, n_clicks_r, county, year, incident_name, selectedData):
+    # Filter data based on the selected year range
+    if year:
+        filtered_df = filtered_df[filtered_df["Year"].between(year[0], year[1])]
 
-    with open('data/processed/processed_cal_fire.pkl', 'rb') as f:
-        calfire_df = pickle.load(f)
+    # Filter data based on selected counties and incident names
+    if county:
+        filtered_df = filtered_df[filtered_df['County'].isin(list(county))]
+    if incident_name:
+        filtered_df = filtered_df[filtered_df['Incident Name'].isin(list(incident_name))]
 
-    # Reset filters 
-    if 'reset' == ctx.triggered_id:
-        county, year, incident_name, selectedData = None, [min_year, max_year], None, None
+    # Generate charts
+    roof_chart = make_roof_chart(filtered_df).to_dict(format="vega")
+    damage_chart = make_damage_chart(filtered_df).to_dict(format="vega")
+    structure_chart = make_structure_chart(filtered_df).to_dict(format="vega")
+    timeseries_chart = make_time_series_chart(filtered_df).to_dict(format="vega")
 
-    else:
-        calfire_df = calfire_df[(calfire_df["Year"].between(year[0], year[1]))]
+    return roof_chart, damage_chart, structure_chart, timeseries_chart
 
-        if selectedData:
-            selected_counties = [point["hovertext"] for point in selectedData["points"]]
-            county = list(set(selected_counties + county)) if county else selected_counties
-            
-        if county:
-            calfire_df = calfire_df[calfire_df['County'].isin(list(county))]
-        
-        if incident_name:
-            calfire_df = calfire_df[calfire_df['Incident Name'].isin(list(incident_name))]
+@callback(
+    Output('summary_card', 'children'),
+    [Input('submit', 'n_clicks')],
+    [State('county', 'value'),
+     State('year', 'value'),
+     State('incident_name', 'value')],
+    prevent_initial_call=True
+)
+def update_summary(n_clicks, county, year, incident_name):
+    filtered_df = calfire_df.copy()
 
-    roof_chart = make_roof_chart(calfire_df)
-    damage_chart = make_damage_chart(calfire_df)
-    structure_chart = make_structure_chart(calfire_df)
-    total_cost = make_summary_chart(calfire_df)  
+    # Filter data
+    if year:
+        filtered_df = filtered_df[filtered_df["Year"].between(year[0], year[1])]
+    if county:
+        filtered_df = filtered_df[filtered_df['County'].isin(list(county))]
+    if incident_name:
+        filtered_df = filtered_df[filtered_df['Incident Name'].isin(list(incident_name))]
 
-    # selectedData = None # To avoid filter being constantly overridden by map selection. Downside is map selection does not persist after filtering.
+    # Calculate total cost
+    total_cost = make_summary_chart(filtered_df)
 
-    summary_card_update = [  
-        dbc.CardHeader("Total Economic Loss",
-                       style={"textAlign": "center",
-                              "fontWeight": "bold",
-                              "background-color": theme_color,
-                                "fontSize": main_font_size,
-                              'color':main_font_color}),
+    summary_card_update = [
+        dbc.CardHeader(
+            "Total Economic Loss",
+            style={
+                "textAlign": "center",
+                "fontWeight": "bold",
+                "background-color": theme_color,
+                "fontSize": main_font_size,
+                "color": main_font_color,
+            },
+        ),
         dbc.CardBody(
             f'{total_cost} USD' if total_cost else "No Data Available",
-            style={"textAlign": "center", "fontSize": "21px"}
-        )
+            style={"textAlign": "center", "fontSize": "21px"},
+        ),
     ]
-    
-
-    timeseries_chart = make_time_series_chart(calfire_df)
-    # fire_damage_map = make_fire_damage_map(county_boundaries, selectedData)
-
-    return (
-        roof_chart.to_dict(format="vega"),
-        damage_chart.to_dict(format="vega"),
-        structure_chart.to_dict(format="vega"),
-        summary_card_update, 
-        timeseries_chart.to_dict(format="vega"),
-        county,
-        year,
-        incident_name,
-    )
+    return summary_card_update
 
 @callback(
     Output("info", "is_open"),
