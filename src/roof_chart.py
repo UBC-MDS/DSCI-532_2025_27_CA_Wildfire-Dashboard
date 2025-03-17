@@ -9,9 +9,7 @@ def make_roof_chart(calfire_df):
     Parameters
     ----------
     calfire_df : pd.DataFrame
-        A DataFrame containing wildfire damage data with at least the following columns:
-        - "Roof Construction": Type of roof construction.
-        - "Damage": Damage severity category.
+        A DataFrame containing wildfire damage data
 
     Returns
     -------
@@ -22,12 +20,21 @@ def make_roof_chart(calfire_df):
     Examples
     --------
     >>> import pandas as pd
-    >>> data = {"Roof Construction": ["Tile", "Shingle", "Tile", "Metal"],
-    ...         "Damage": ["No Damage", "Minor (10-25%)", "Destroyed (>50%)", "Major (26-50%)"]}
-    >>> df = pd.DataFrame(data)
-    >>> chart = make_roof_chart(df)
+    >>> import pickle
+    >>> with open('data/processed/processed_cal_fire.pkl', 'rb') as f:
+            calfire_df = pickle.load(f)
+    >>> chart = make_roof_chart(calfire_df)
     >>> chart.show()
+
+    Notes
+    -----
+    The function uses the first 47 columns of the input DataFrame to create a damage table and count table.
+    It then concatenates these tables to form the final data used for the chart.
     """
+
+    
+
+
     alt.data_transformers.enable("vegafusion")
 
     damage_table = pd.DataFrame(calfire_df.columns[:47].to_list(), columns=[ "Roof Construction", "Damage Category"])
