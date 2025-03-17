@@ -2,39 +2,36 @@ import pandas as pd
 from .millions_billions import millions_billions
 
 def make_summary_chart(calfire_df):
-
-     """
-    Creates a summary chart displaying the total assessed economic loss due to wildfire damage.
+    """
+    Calculate and return the total economic loss from wildfire data, 
+    formatted as millions or billions.
 
     Parameters
     ----------
     calfire_df : pd.DataFrame
-        A DataFrame containing wildfire damage data with at least the following column:
-        - "Assessed Improved Value": The monetary value of assessed improvements to structures.
+        DataFrame containing wildfire economic data. Must include a column named 'Total Economic Loss'.
 
     Returns
     -------
-    float or alt.Chart
-        - If the required column is missing or the DataFrame is empty, returns `0`.
-        - Otherwise, returns an Altair text chart displaying the total economic loss in billions of USD.
-
-    Notes
-    -----
-    - Converts the total assessed value from USD to billions for readability.
-    - Uses a mouse-over interaction to change the text color dynamically.
-    - If no valid data exists, the function returns `0` instead of a chart.
+    total_cost : int or float
+        Total economic loss aggregated across the DataFrame, converted to a human-readable
+        format (millions or billions). Returns 0 if the required column is missing or if
+        the DataFrame is empty.
 
     Examples
     --------
-    >>> import pandas as pd
-    >>> data = {"Assessed Improved Value": [50000000, 200000000, 150000000]}
-    >>> df = pd.DataFrame(data)
-    >>> chart = make_summary_chart(df)
-    >>> chart.show()  # Displays the total economic loss chart.
+    >>> data = pd.DataFrame({'Total Economic Loss': [1000000, 2000000, 5000000]})
+    >>> make_summary_chart(data)
+    '8.0M'
+
+    >>> empty_df = pd.DataFrame()
+    >>> make_summary_chart(empty_df)
+    0
     """
-     if "Total Economic Loss" not in calfire_df.columns or calfire_df.empty:
+    
+    if "Total Economic Loss" not in calfire_df.columns or calfire_df.empty:
          return 0
 
-     total_cost = millions_billions(calfire_df["Total Economic Loss"].sum()) #convert the values to Millions or Billions
+    total_cost = millions_billions(calfire_df["Total Economic Loss"].sum()) #convert the values to Millions or Billions
 
-     return total_cost
+    return total_cost

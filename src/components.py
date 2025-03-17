@@ -43,7 +43,7 @@ References
 ----------
 GitHub Repository: https://github.com/UBC-MDS/DSCI-532_2025_27_CA_Wildfire-Dashboard
 
-Last updated: March 5th, 2025
+Last updated: March 17th, 2025
 """
 
 
@@ -332,6 +332,6 @@ reference_info = dbc.Row(
             "GitHub Repository: ",
             html.A("View on GitHub", href="https://github.com/UBC-MDS/DSCI-532_2025_27_CA_Wildfire-Dashboard", target="_blank")
         ]),
-        html.P(f"Last updated: March 14th, 2025")
+        html.P(f"Last updated: March 17th, 2025")
     ], style={"text-align": "center", "margin-top": "20px"}))
 
