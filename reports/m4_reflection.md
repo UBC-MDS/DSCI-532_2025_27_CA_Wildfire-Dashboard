@@ -15,9 +15,10 @@
 - Enhance user guidance and context through text.
 - The performance of the dashboard was improved by:
   - Cache initial dashboard
+  - optimizing our preprocessed data and only keeping pre-aggregating key values from our raw dataset
   - Save preprocessed data in more efficient format (other than CSV) (parquet / feather / pickle).
   - "Apply filters" button to avoid updating the entire dashboard with every single filter input.
-  - used Dask for parallel processing to improve performance.
+  - Experimented with Dask implementation but found that it did not solve our issues so we chose to stick with pandas for ease of use
 - The dashboard layout was improved with:  
   - Align cards at the button for better readability.
   - Align labels in filter with correct input fields.
@@ -30,6 +31,7 @@
 
 - Tooltip summary of hovering on map to include counts based on damage level was not included. Calculating the count was too complex and impacting the performance of the visualization. This was due to data inconsistencies and limitations in Plotly's customization.
 - Unfortunately, caching will not work well in our app as most of our functions take a pandas dataframe as an argument which cannot be hashed and thus cannot be cached.
+- heat map does not update anymore when we filter by selecting the counties, this is to improve the performance of the application.
 
 -----------------------------------------------------------
 
