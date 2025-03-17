@@ -3,45 +3,46 @@ import altair as alt
 
 def make_time_series_chart(calfire_df, selected_counties=None):
     """
-    Creates an interactive time-series chart showing the total economic loss due to wildfires over the years.
+    Generate an Altair time-series line chart visualizing total economic losses from wildfires by county and year.
+
+    The chart aggregates total economic loss per county per year, automatically adjusting units to billions, millions,
+    or dollars depending on the magnitude of the maximum loss. If no counties are explicitly selected, the chart defaults
+    to displaying the top 10 counties by total economic loss and includes interactive filtering through the legend.
 
     Parameters
     ----------
     calfire_df : pd.DataFrame
-        A DataFrame containing wildfire damage data with at least the following columns:
-        - "Incident Start Date": A datetime column representing the start date of each wildfire incident.
-        - "County": The county where the wildfire occurred.
-        - "Assessed Improved Value": The monetary value of assessed improvements to structures.
+        DataFrame containing wildfire data. Required columns include:
+        - 'County': County names.
+        - 'Year': Year of the reported economic loss.
+        - 'Total Economic Loss': Numeric economic losses per event or year.
 
-    selected_counties : list, optional
-        A list of county names to filter the chart to specific counties. If None, the function selects
-        the top 10 counties with the highest economic loss.
+    selected_counties : list of str, optional
+        Specific counties to visualize. If `None`, defaults to showing the top 10 counties.
 
     Returns
     -------
     alt.Chart or dict
-        - If the input DataFrame is empty, returns an empty dictionary `{}`.
-        - Otherwise, returns an Altair line chart showing the total economic loss over time.
-
-    Notes
-    -----
-    - The function aggregates the total assessed economic loss per year and county.
-    - If `selected_counties` is provided, the chart only includes data for those counties.
-    - If `selected_counties` is None, the top 10 counties with the highest total economic loss are selected.
-    - Users can zoom into the chart and filter by clicking on the legend.
+        An Altair line chart object visualizing economic losses over time, or an empty dictionary `{}` if
+        `calfire_df` is empty.
 
     Examples
     --------
-    >>> import pandas as pd
-    >>> data = {
-    ...     "Incident Start Date": pd.to_datetime(["2015-06-01", "2016-07-15", "2016-09-10"]),
-    ...     "County": ["Los Angeles", "San Diego", "San Diego"],
-    ...     "Total Economic Loss": [100000000, 50000000, 75000000]
-    ... }
-    >>> df = pd.DataFrame(data)
-    >>> chart = make_time_series_chart(df)
-    >>> chart.show()  # Displays the interactive time-series chart.
+    >>> data = pd.DataFrame({
+    ...     'County': ['Los Angeles', 'Los Angeles', 'San Diego', 'San Diego'],
+    ...     'Year': [2019, 2020, 2019, 2020],
+    ...     'Total Economic Loss': [1.2e9, 1.5e9, 500e6, 800e6]
+    ... })
+    >>> chart = make_time_series_chart(data)
+    >>> type(chart)
+    <class 'altair.vegalite.v5.api.Chart'>
+
+    Notes
+    -----
+    - The chart includes interactive elements that allow users to filter data by clicking on counties in the legend.
+    - Numeric formatting automatically adapts based on the magnitude of the economic loss data.
     """
+    
     if calfire_df.empty:
         return {}
     
