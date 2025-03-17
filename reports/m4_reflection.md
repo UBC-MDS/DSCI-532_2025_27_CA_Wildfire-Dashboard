@@ -8,13 +8,13 @@
 
 - Removed 0 on Y-axis everywhere for Line chart
 - Introduced state and submit buttons for all three filters.
-- add incident date to incident ID for easy identification
+- Used incident name instead of incident ID for easy identification
 - Removed Zoom on the buttom line charts
 - Added cleadr filter button for all filters
 - Create favicon and tab title
 - Enhance user guidance and context through text.
 - The performance of the dashboard was improved by:
-  - Cache initial dashboard data for faster loading.
+  - Cache initial dashboard
   - Save preprocessed data in more efficient format (other than CSV) (parquet / feather / pickle).
   - "Apply filters" button to avoid updating the entire dashboard with every single filter input.
   - used Dask for parallel processing to improve performance.
@@ -29,6 +29,7 @@
 ## **Features Not Implemented**
 
 - Tooltip summary of hovering on map to include counts based on damage level was not included. Calculating the count was too complex and impacting the performance of the visualization. This was due to data inconsistencies and limitations in Plotly's customization.
+- Unfortunately, caching will not work well in our app as most of our functions take a pandas dataframe as an argument which cannot be hashed and thus cannot be cached.
 
 -----------------------------------------------------------
 
