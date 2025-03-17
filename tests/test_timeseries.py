@@ -10,9 +10,9 @@ from timeseries_chart import make_time_series_chart
 
 # Sample wildfire dataset
 sample_data = pd.DataFrame({
-    "Incident Start Date": pd.to_datetime(["2015-06-01", "2016-07-15", "2017-09-10", "2018-08-05"]),
+    "Year": pd.to_datetime(["2015", "2016", "2017", "2018"]),
     "County": ["Los Angeles", "San Diego", "Los Angeles", "San Francisco"],
-    "Assessed Improved Value": [100000000, 50000000, 75000000, 20000000]
+    "Total Economic Loss": [100000000, 50000000, 75000000, 20000000]
 })
 
 
@@ -55,9 +55,9 @@ def test_make_time_series_chart_single_county():
 def test_make_time_series_chart_large_values():
     """Test correct handling of large values (billions)."""
     large_data = pd.DataFrame({
-        "Incident Start Date": pd.to_datetime(["2015-06-01", "2016-07-15", "2017-09-10"]),
+        "Year": pd.to_datetime(["2015", "2016", "2017"]),
         "County": ["Los Angeles", "San Diego", "San Francisco"],
-        "Assessed Improved Value": [2e9, 1.5e9, 3.2e9]  # Values in billions
+        "Total Economic Loss": [2e9, 1.5e9, 3.2e9]  # Values in billions
     })
 
     result = make_time_series_chart(large_data)
